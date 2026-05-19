@@ -1,0 +1,3531 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acta de Reunión Interna | Seguimiento de Acuerdos</title>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.min.js"></script>
+    <style>
+        :root {
+            --primary: #1e3a5f;
+            --accent: #2563eb;
+            --accent-light: #3b82f6;
+            --success: #10b981;
+            --teal: #0d9488;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #0ea5e9;
+            --bg: #f1f5f9;
+            --surface: #ffffff;
+            --text: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --radius: 10px;
+            --shadow: 0 4px 14px rgba(15,23,42,0.08);
+            /* Windows 11 Fluent */
+            --fluent-accent: #005FB8;
+            --fluent-accent-hover: #106EBE;
+            --fluent-accent-pressed: #004494;
+            --fluent-accent-subtle: #EBF3FC;
+            --fluent-success: #107C10;
+            --fluent-success-hover: #0E6E0E;
+            --fluent-teal: #038387;
+            --fluent-teal-hover: #026D70;
+            --fluent-warning-bg: #FFF4CE;
+            --fluent-warning-fg: #7A5C00;
+            --fluent-warning-border: #F9E79F;
+            --fluent-caution: #CA5010;
+            --fluent-caution-hover: #B5480E;
+            --fluent-danger: #C42B1C;
+            --fluent-danger-hover: #B52D2D;
+            --fluent-subtle: rgba(0, 0, 0, 0.0375);
+            --fluent-subtle-hover: rgba(0, 0, 0, 0.0537);
+            --fluent-stroke: rgba(0, 0, 0, 0.0578);
+            --fluent-stroke-strong: #8A8A8A;
+            --fluent-radius-control: 4px;
+            --fluent-radius-card: 8px;
+            --fluent-shadow-button: 0 1px 0 rgba(0,0,0,0.06);
+            --acta-blue: #1a6fd4;
+            --nav-blue: #0f2744;
+            --nav-blue-light: #163a5f;
+            --card-shadow: 0 4px 20px rgba(15, 39, 68, 0.08);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI Variable', 'Segoe UI', system-ui, -apple-system, Roboto, sans-serif;
+            background: #eef2f7;
+            color: var(--text);
+            line-height: 1.5;
+            font-size: 14px;
+            min-height: 100vh;
+        }
+        .container { max-width: 1400px; margin: auto; padding: 16px 20px 24px; }
+
+        /* Barra superior */
+        .app-topbar {
+            background: linear-gradient(90deg, var(--nav-blue) 0%, var(--nav-blue-light) 100%);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 10px 20px;
+            box-shadow: 0 2px 12px rgba(15, 39, 68, 0.25);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .topbar-menu {
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 1.35rem;
+            cursor: pointer;
+            padding: 6px 8px;
+            border-radius: var(--fluent-radius-control);
+            line-height: 1;
+        }
+        .topbar-menu:hover { background: rgba(255, 255, 255, 0.1); }
+        .topbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 0 1 auto;
+            min-width: 0;
+        }
+        .topbar-brand img {
+            height: 42px;
+            width: auto;
+            max-width: 52px;
+            object-fit: contain;
+            filter: brightness(1.05);
+        }
+        .topbar-brand-text { display: flex; flex-direction: column; line-height: 1.2; }
+        .topbar-brand-text .brand-name { font-weight: 700; font-size: 1.05rem; letter-spacing: 0.02em; }
+        .topbar-brand-text .brand-tagline {
+            font-size: 0.62rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            opacity: 0.88;
+            text-transform: uppercase;
+        }
+        .topbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-shrink: 0;
+        }
+        .topbar-notif {
+            position: relative;
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: var(--fluent-radius-control);
+        }
+        .topbar-notif:hover { background: rgba(255, 255, 255, 0.1); }
+        .notif-badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: #e81123;
+            color: #fff;
+            font-size: 0.65rem;
+            font-weight: 700;
+            min-width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--nav-blue);
+        }
+        .notif-badge.has-items { display: flex; }
+        .topbar-divider { width: 1px; height: 32px; background: rgba(255, 255, 255, 0.35); }
+        .topbar-user {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: var(--fluent-radius-control);
+            user-select: none;
+        }
+        .topbar-user:hover { background: rgba(255, 255, 255, 0.1); }
+        body.modo-admin .topbar-user { outline: 1px solid rgba(255, 255, 255, 0.35); }
+        body.modo-local .admin-only { display: none !important; }
+        body.modo-local .principal-header .btn,
+        body.modo-local .header-actions .btn,
+        body.modo-local .actions .btn-act-edit,
+        body.modo-local .actions .btn-act-del,
+        body.modo-local .actions .btn-add-sub { display: none !important; }
+        .topbar-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+        .topbar-user-info { display: flex; flex-direction: column; line-height: 1.25; }
+        .topbar-user-info #topbarUserName { font-weight: 700; font-size: 0.88rem; }
+        .topbar-role { font-size: 0.72rem; opacity: 0.85; }
+        .topbar-chevron { font-size: 0.65rem; opacity: 0.7; margin-left: 2px; }
+        .notif-wrap { position: relative; }
+        .notif-panel {
+            display: none;
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            width: min(380px, 92vw);
+            max-height: 360px;
+            overflow-y: auto;
+            background: #fff;
+            color: var(--text);
+            border-radius: var(--fluent-radius-card);
+            box-shadow: 0 12px 40px rgba(15, 39, 68, 0.22);
+            border: 1px solid var(--border);
+            z-index: 200;
+        }
+        .notif-panel.open { display: block; }
+        .notif-panel-header {
+            padding: 12px 14px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            border-bottom: 1px solid var(--border);
+            background: #fef2f2;
+            color: #b91c1c;
+        }
+        .notif-panel-empty { padding: 20px 14px; color: var(--text-muted); font-size: 0.85rem; text-align: center; }
+        .notif-item {
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: background 0.1s;
+        }
+        .notif-item:hover { background: #f8fafc; }
+        .notif-item strong { display: block; font-size: 0.84rem; margin-bottom: 4px; color: #0f172a; }
+        .notif-item span { font-size: 0.75rem; color: var(--text-muted); }
+        .notif-item .notif-venc { color: #dc2626; font-weight: 600; }
+
+        /* Tarjetas superiores */
+        .hero-cards {
+            display: grid;
+            grid-template-columns: 1.15fr 0.85fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        @media (max-width: 960px) {
+            .hero-cards { grid-template-columns: 1fr; }
+        }
+        .card-proyecto,
+        .card-acta {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(226, 232, 240, 0.9);
+            overflow: hidden;
+        }
+        .card-proyecto {
+            position: relative;
+            padding: 0;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        .card-proyecto::after { display: none; }
+        .proyecto-banner-img {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: contain;
+            border-radius: 12px 12px 0 0;
+        }
+        .meta-proyecto-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+        .card-proyecto-fallback {
+            padding: 20px 22px 22px;
+            min-height: 200px;
+        }
+        .card-proyecto-head {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 14px;
+            position: relative;
+            z-index: 1;
+        }
+        .card-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+        .card-icon-blue { background: #2563eb; color: #fff; box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35); }
+        .card-label {
+            font-size: 0.78rem;
+            font-weight: 800;
+            color: #2563eb;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+        .proyecto-nombre {
+            position: relative;
+            z-index: 1;
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: #0f2744;
+            line-height: 1.5;
+            text-transform: uppercase;
+            padding: 14px 16px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #f0f7ff 0%, #e8f3fc 55%, #f8fafc 100%);
+            border: 1px solid #cfe3f7;
+            user-select: text;
+            cursor: default;
+            max-width: calc(100% - 40px);
+        }
+
+        .card-acta-header {
+            background: linear-gradient(90deg, var(--nav-blue) 0%, #1e4a7a 100%);
+            color: #fff;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-weight: 800;
+            font-size: 0.88rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+        .card-acta-header .acta-cal-icon { font-size: 1.1rem; opacity: 0.95; }
+        .card-acta-body { padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 12px; }
+        .acta-field-row {
+            display: grid;
+            grid-template-columns: 40px 1fr;
+            gap: 12px;
+            align-items: start;
+        }
+        .acta-field-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #e8f3fc;
+            color: #2563eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.95rem;
+            flex-shrink: 0;
+            margin-top: 18px;
+        }
+        .acta-field-body label {
+            display: block;
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        .acta-field-body input,
+        .acta-field-body select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid var(--fluent-stroke);
+            border-radius: var(--fluent-radius-control);
+            border-bottom-color: var(--fluent-stroke-strong);
+            font-size: 0.88rem;
+            background: #fff;
+            color: var(--text);
+            box-shadow: var(--fluent-shadow-button);
+            transition: border-color 0.1s, box-shadow 0.1s;
+        }
+        .acta-field-body input:hover,
+        .acta-field-body select:hover { border-color: var(--fluent-accent); }
+        .acta-field-body input:focus,
+        .acta-field-body select:focus {
+            outline: none;
+            border-color: var(--fluent-accent);
+            box-shadow: 0 0 0 2px var(--fluent-accent-subtle);
+        }
+        .acta-asistencia-btn-row { margin-top: 4px; }
+        .btn-asistencia {
+            width: 100%;
+            justify-content: center;
+            background: #eff6ff;
+            color: #1e40af;
+            border: 1px solid #93c5fd;
+            font-weight: 600;
+        }
+        .btn-asistencia:hover { background: #dbeafe; border-color: #60a5fa; }
+        .asistencia-acta-wrap {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(226, 232, 240, 0.9);
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+        .tbl-asistentes { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+        .tbl-asistentes thead tr:first-child th {
+            background: linear-gradient(90deg, #dbeafe, #eff6ff);
+            color: #1e3a5f;
+            font-weight: 800;
+            font-size: 0.9rem;
+            letter-spacing: 0.06em;
+            text-align: center;
+            padding: 10px 12px;
+            border-bottom: 2px solid #93c5fd;
+        }
+        .tbl-asistentes thead tr:nth-child(2) th {
+            background: #f1f5f9;
+            color: #475569;
+            font-weight: 700;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--border);
+            width: 50%;
+        }
+        .tbl-asistentes tbody td {
+            padding: 9px 12px;
+            border-bottom: 1px solid var(--border);
+            color: #0f172a;
+        }
+        .tbl-asistentes tbody tr:nth-child(even) { background: #f8fafc; }
+        .tbl-asistentes .asist-empty td {
+            text-align: center;
+            color: var(--text-muted);
+            font-style: italic;
+            padding: 16px;
+        }
+        .asistencia-add-row {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+        .asistencia-add-row select { flex: 1; min-width: 200px; }
+        .modal-asistencia .modal-content { max-width: 640px; }
+        .tbl-asistentes-modal { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+        .tbl-asistentes-modal thead tr:first-child th {
+            background: #dbeafe;
+            text-align: center;
+            font-weight: 800;
+            padding: 8px;
+            border: 1px solid #93c5fd;
+        }
+        .tbl-asistentes-modal th, .tbl-asistentes-modal td {
+            border: 1px solid var(--border);
+            padding: 8px 10px;
+        }
+        .tbl-asistentes-modal thead tr:nth-child(2) th { background: #f1f5f9; font-size: 0.76rem; }
+        .btn-borrar-asist {
+            background: #fee2e2;
+            color: #b91c1c;
+            border: 1px solid #fecaca;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.78rem;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .btn-borrar-asist:hover { background: #fecaca; }
+        .acta-field-body input.field-readonly {
+            background: #f3f6f9;
+            color: #334155;
+            cursor: default;
+        }
+
+        /* KPI */
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        @media (max-width: 1100px) { .dashboard { grid-template-columns: repeat(3, 1fr); } }
+        @media (max-width: 700px) { .dashboard { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 480px) { .dashboard { grid-template-columns: 1fr; } }
+        .kpi {
+            background: #fff;
+            padding: 16px 16px 14px;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid #e8edf3;
+            cursor: pointer;
+            transition: box-shadow 0.15s, border-color 0.15s, transform 0.15s;
+            user-select: none;
+            position: relative;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            min-height: 130px;
+        }
+        .kpi:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(15, 39, 68, 0.12);
+        }
+        .kpi.active {
+            border-color: var(--fluent-accent);
+            box-shadow: 0 0 0 2px var(--fluent-accent-subtle), var(--card-shadow);
+        }
+        .kpi-chevron {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            font-size: 1.1rem;
+            color: #94a3b8;
+            font-weight: 300;
+            line-height: 1;
+        }
+        .kpi-top {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            padding-right: 20px;
+        }
+        .kpi-icon-wrap {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.95rem;
+            flex-shrink: 0;
+        }
+        .kpi h3 {
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            line-height: 1.2;
+        }
+        .kpi .value {
+            font-size: 2rem;
+            font-weight: 800;
+            line-height: 1;
+            margin: 4px 0 10px;
+        }
+        .kpi-accent {
+            height: 3px;
+            border-radius: 2px;
+            margin-bottom: 8px;
+            width: 100%;
+        }
+        .kpi-desc {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            line-height: 1.35;
+            margin-top: auto;
+        }
+        .kpi.total .kpi-icon-wrap { background: #dbeafe; }
+        .kpi.total .value { color: #2563eb; }
+        .kpi.total .kpi-accent { background: #2563eb; }
+        .kpi.total.active { border-color: #2563eb; }
+        .kpi.pending .kpi-icon-wrap { background: #ffedd5; }
+        .kpi.pending .value { color: #ea580c; }
+        .kpi.pending .kpi-accent { background: #f59e0b; }
+        .kpi.pending.active { border-color: #f59e0b; }
+        .kpi.process .kpi-icon-wrap { background: #e0f2fe; }
+        .kpi.process .value { color: #0284c7; }
+        .kpi.process .kpi-accent { background: #38bdf8; }
+        .kpi.process.active { border-color: #38bdf8; }
+        .kpi.closed .kpi-icon-wrap { background: #d1fae5; }
+        .kpi.closed .value { color: #059669; }
+        .kpi.closed .kpi-accent { background: #10b981; }
+        .kpi.closed.active { border-color: #10b981; }
+        .kpi.overdue .kpi-icon-wrap { background: #fee2e2; }
+        .kpi.overdue .value { color: #dc2626; }
+        .kpi.overdue .kpi-accent { background: #ef4444; }
+        .kpi.overdue.active { border-color: #ef4444; }
+
+        /* Toolbar */
+        .toolbar {
+            display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+            background: var(--surface); padding: 10px 12px; border-radius: var(--radius);
+            box-shadow: var(--shadow); margin-bottom: 14px; border: 1px solid var(--border);
+        }
+        .btn {
+            padding: 8px 14px;
+            border: 1px solid transparent;
+            border-radius: var(--fluent-radius-control);
+            cursor: pointer;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.1s, border-color 0.1s, color 0.1s, box-shadow 0.1s;
+            font-size: 0.84rem;
+            white-space: nowrap;
+            font-family: 'Segoe UI Variable', 'Segoe UI', system-ui, sans-serif;
+            box-shadow: var(--fluent-shadow-button);
+        }
+        .btn:hover { filter: none; transform: none; }
+        .btn:active { transform: scale(0.98); }
+        .btn-primary {
+            background: var(--fluent-accent);
+            color: #fff;
+            border-color: var(--fluent-accent);
+        }
+        .btn-primary:hover { background: var(--fluent-accent-hover); border-color: var(--fluent-accent-hover); }
+        .btn-primary:active { background: var(--fluent-accent-pressed); border-color: var(--fluent-accent-pressed); }
+        .btn-success {
+            background: var(--fluent-success);
+            color: #fff;
+            border-color: var(--fluent-success);
+        }
+        .btn-success:hover { background: var(--fluent-success-hover); border-color: var(--fluent-success-hover); }
+        .btn-excel {
+            background: #217346;
+            color: #fff;
+            border: 1px solid #1e6b41;
+        }
+        .btn-excel:hover { background: #1a5c38; border-color: #1a5c38; }
+        .btn-online {
+            background: var(--fluent-accent);
+            color: #fff;
+            border: 1px solid var(--fluent-accent-pressed);
+        }
+        .btn-online:hover { background: var(--fluent-accent-hover); border-color: var(--fluent-accent-hover); }
+        .btn-online:disabled { opacity: 0.65; cursor: wait; }
+        .topbar-bd-panel {
+            flex: 1 1 240px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            min-width: 0;
+            max-width: 520px;
+            margin: 0 auto;
+            padding: 0 10px;
+        }
+        .topbar-bd-progress {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            max-width: 340px;
+        }
+        .topbar-bd-progress.topbar-bd-progress--hidden { display: none; }
+        .topbar-bd-bar-outer {
+            flex: 1;
+            height: 14px;
+            background: rgba(255, 255, 255, 0.22);
+            border-radius: 999px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.15);
+        }
+        .topbar-bd-bar-inner {
+            height: 100%;
+            width: 0%;
+            min-width: 0;
+            border-radius: 999px;
+            background: linear-gradient(90deg, #1d6fd4 0%, #2b8cff 50%, #5ba8ff 100%);
+            transition: width 0.16s ease-out;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 6px;
+            box-sizing: border-box;
+        }
+        .topbar-bd-pct {
+            font-size: 0.68rem;
+            font-weight: 800;
+            color: #fff;
+            font-variant-numeric: tabular-nums;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+            white-space: nowrap;
+            line-height: 1;
+        }
+        .topbar-bd-pct-outer { display: none; }
+        .topbar-bd-label {
+            display: inline-flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 6px 8px;
+            padding: 4px 12px;
+            background: #fff;
+            border-radius: 4px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            max-width: 100%;
+        }
+        .topbar-bd-label-text {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #1e3a5f;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+        }
+        .topbar-bd-ts {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: #0f2744;
+            font-variant-numeric: tabular-nums;
+            font-family: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
+            letter-spacing: 0.03em;
+            white-space: nowrap;
+        }
+        .topbar-bd-ts.is-empty { color: #64748b; font-weight: 600; }
+        .btn-teal {
+            background: var(--fluent-teal);
+            color: #fff;
+            border-color: var(--fluent-teal);
+        }
+        .btn-teal:hover { background: var(--fluent-teal-hover); border-color: var(--fluent-teal-hover); }
+        .btn-load {
+            background: var(--fluent-warning-bg);
+            color: var(--fluent-warning-fg);
+            border-color: var(--fluent-warning-border);
+        }
+        .btn-load:hover { background: #FFEF9E; border-color: #F5D547; }
+        .btn-print {
+            background: var(--fluent-caution);
+            color: #fff;
+            border-color: var(--fluent-caution);
+        }
+        .btn-print:hover { background: var(--fluent-caution-hover); border-color: var(--fluent-caution-hover); }
+        .btn-warning {
+            background: var(--fluent-warning-bg);
+            color: var(--fluent-warning-fg);
+            border-color: var(--fluent-warning-border);
+        }
+        .btn-danger {
+            background: var(--fluent-danger);
+            color: #fff;
+            border-color: var(--fluent-danger);
+        }
+        .btn-danger:hover { background: var(--fluent-danger-hover); border-color: var(--fluent-danger-hover); }
+        .btn-outline {
+            background: var(--fluent-subtle);
+            border-color: var(--fluent-stroke-strong);
+            color: var(--text);
+        }
+        .btn-outline:hover { background: var(--fluent-subtle-hover); border-color: #6e6e6e; }
+        .btn-icon { padding: 6px 10px; min-width: 34px; justify-content: center; }
+        .btn-sm { padding: 5px 10px; font-size: 0.78rem; }
+        .btn-act-edit {
+            background: var(--fluent-warning-bg);
+            color: var(--fluent-warning-fg);
+            border: 1px solid var(--fluent-warning-border);
+            width: 30px;
+            height: 30px;
+            border-radius: var(--fluent-radius-control);
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--fluent-shadow-button);
+        }
+        .btn-act-edit:hover { background: #FFEF9E; border-color: #F5D547; }
+        .btn-act-del {
+            background: var(--fluent-danger);
+            color: #fff;
+            border: 1px solid var(--fluent-danger);
+            width: 30px;
+            height: 30px;
+            border-radius: var(--fluent-radius-control);
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--fluent-shadow-button);
+        }
+        .btn-act-del:hover { background: var(--fluent-danger-hover); border-color: var(--fluent-danger-hover); }
+        .toolbar .spacer { flex: 1; min-width: 8px; }
+        .toolbar .search-wrap { position: relative; display: flex; align-items: center; }
+        .toolbar .search-wrap::before { content: '🔍'; position: absolute; left: 10px; font-size: 0.8rem; opacity: 0.5; pointer-events: none; }
+        .toolbar input[type="text"] { min-width: 180px; padding-left: 32px; }
+        .toolbar input, .toolbar select { padding: 8px 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.84rem; background: #fff; }
+
+        /* Sections hierarchy */
+        .principal-block {
+            background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow);
+            margin-bottom: 12px; overflow: hidden; border: 1px solid var(--border);
+        }
+        .principal-header {
+            background: #e2e8f0; padding: 11px 14px; font-weight: 800; font-size: 0.9rem;
+            color: #0f172a; text-transform: uppercase; letter-spacing: 0.4px;
+            display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;
+            border-bottom: 2px solid #94a3b8;
+        }
+        .principal-header .title-wrap { display: flex; align-items: center; gap: 8px; flex: 1; cursor: pointer; min-width: 180px; }
+        .principal-header .toggle-icon { font-size: 0.75rem; color: var(--text-muted); }
+        .principal-body { padding: 10px 12px 12px; background: #f8fafc; }
+        .principal-body.collapsed { display: none; }
+
+        .secundaria-block { margin: 0 0 10px; border: 1px solid #93c5fd; border-radius: 8px; overflow: hidden; background: #fff; }
+        .secundaria-header {
+            background: linear-gradient(90deg, #dbeafe, #eff6ff);
+            padding: 9px 12px; font-weight: 700; font-size: 0.86rem; color: #1e40af;
+            display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;
+            border-bottom: 1px solid #93c5fd;
+        }
+        .secundaria-header .title-wrap { flex: 1; cursor: pointer; display: flex; align-items: center; gap: 8px; min-width: 160px; }
+        .secundaria-header .header-actions { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+        .secundaria-body.collapsed { display: none; }
+        .secundaria-body { padding: 0; }
+
+        .table-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        th, td { padding: 10px 10px; border-bottom: 1px solid var(--border); text-align: left; vertical-align: middle; }
+        th { background: #f1f5f9; font-weight: 600; color: var(--text-muted); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.2px; }
+        tr.acuerdo-row:hover { background: #f8fafc; }
+        tr.acuerdo-row.has-subs td { border-bottom: none; }
+        tr.sub-acuerdo-row {
+            background: linear-gradient(90deg, #eff6ff 0%, #f8fafc 100%);
+            border-left: 3px solid #3b82f6;
+        }
+        tr.sub-acuerdo-row:hover { background: #e0f2fe; }
+        tr.sub-acuerdo-row td { font-size: 0.82rem; padding: 8px 10px; }
+        tr.sub-acuerdo-row.hidden-sub { display: none; }
+        .acuerdo-cell { display: flex; align-items: flex-start; gap: 8px; }
+        .btn-toggle-subs {
+            flex-shrink: 0;
+            width: 26px;
+            height: 26px;
+            border: 1px solid var(--fluent-accent);
+            border-radius: var(--fluent-radius-control);
+            background: var(--fluent-accent);
+            color: #fff;
+            cursor: pointer;
+            font-size: 0.7rem;
+            line-height: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--fluent-shadow-button);
+            transition: background 0.1s, border-color 0.1s;
+        }
+        .btn-toggle-subs:hover { background: var(--fluent-accent-hover); border-color: var(--fluent-accent-hover); transform: none; }
+        .btn-toggle-subs.empty { visibility: hidden; pointer-events: none; }
+        .sub-indent { display: flex; align-items: center; gap: 6px; padding-left: 4px; }
+        .sub-indent::before { content: '↳'; color: #2563eb; font-weight: 700; font-size: 1rem; }
+        .sub-texto { color: #334155; font-style: italic; font-weight: 500; }
+        .sub-texto.placeholder { color: #94a3b8; }
+        .subs-count {
+            font-size: 0.7rem; color: #64748b; background: #e0e7ff; padding: 2px 6px;
+            border-radius: 10px; margin-left: 6px; font-weight: 600;
+        }
+        .warn-icon { color: #eab308; margin-left: 4px; font-size: 0.9rem; }
+        .ref-doc { color: var(--danger); font-size: 0.78rem; margin-top: 4px; display: block; }
+        .badge { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; display: inline-block; }
+        .badge-pendiente { background: #fef3c7; color: #92400e; }
+        .badge-proceso { background: #e0f2fe; color: #0369a1; }
+        .badge-cerrado { background: #d1fae5; color: #065f46; }
+        .badge-vencido { background: #fee2e2; color: #b91c1c; }
+        .actions { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+        .cell-input { width: 100%; padding: 5px 8px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.82rem; }
+        .cell-input:focus { outline: 2px solid var(--accent-light); border-color: var(--accent); }
+        .cell-readonly { padding: 4px 0; }
+        .fecha-vencida { color: var(--danger); font-weight: 600; }
+        .btn-add-sub {
+            background: var(--fluent-accent);
+            color: #fff;
+            border: 1px solid var(--fluent-accent);
+            width: 32px;
+            height: 32px;
+            border-radius: var(--fluent-radius-control);
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.1s, border-color 0.1s;
+            box-shadow: var(--fluent-shadow-button);
+        }
+        .btn-add-sub:hover { background: var(--fluent-accent-hover); border-color: var(--fluent-accent-hover); transform: none; }
+        .empty-state { text-align: center; padding: 40px 20px; color: var(--text-muted); }
+        .empty-state p { margin-top: 8px; }
+
+        .modal { position: fixed; inset: 0; background: rgba(15,23,42,0.45); display: none; align-items: center; justify-content: center; z-index: 200; padding: 16px; }
+        .modal.active { display: flex; }
+        .modal-content { background: var(--surface); padding: 24px; border-radius: var(--radius); width: 100%; max-width: 560px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 50px rgba(0,0,0,0.2); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .form-group label { display: block; margin-bottom: 4px; font-size: 0.82rem; color: var(--text-muted); font-weight: 500; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; font-size: 0.9rem; }
+        .form-group textarea { resize: vertical; min-height: 72px; }
+        .form-full { grid-column: span 2; }
+        .modal-footer { margin-top: 18px; display: flex; justify-content: flex-end; gap: 8px; }
+
+        .toast { position: fixed; bottom: 24px; right: 24px; background: #1e293b; color: #fff; padding: 12px 18px; border-radius: 8px; opacity: 0; transition: 0.3s; z-index: 300; pointer-events: none; box-shadow: var(--shadow); }
+        .toast.show { opacity: 1; transform: translateY(-4px); }
+
+        .prompt-overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.4); display: none; align-items: center; justify-content: center; z-index: 250; }
+        .prompt-overlay.active { display: flex; }
+        .prompt-box { background: var(--surface); padding: 20px; border-radius: var(--radius); width: 90%; max-width: 400px; box-shadow: var(--shadow); }
+        .prompt-box h3 { margin-bottom: 12px; font-size: 1rem; }
+        .prompt-box input { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 14px; }
+        .prompt-actions { display: flex; gap: 8px; justify-content: flex-end; }
+
+        @media print {
+            .toolbar, .actions .btn, .btn-add-sub, .btn-toggle-subs, .modal, .toast, .prompt-overlay { display: none !important; }
+            body { background: #fff; padding: 0; }
+            .principal-body, .secundaria-body { display: block !important; }
+            .app-topbar { position: static; }
+            .topbar-menu, .topbar-notif, .topbar-chevron, .topbar-bd-progress { display: none !important; }
+            .hero-cards, .card-proyecto, .card-acta, .asistencia-acta-wrap { break-inside: avoid; }
+            .proyecto-nombre, .card-acta-header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        }
+        @media (max-width: 768px) {
+            .form-grid { grid-template-columns: 1fr; }
+            .form-full { grid-column: span 1; }
+            .app-topbar { padding: 10px 14px; flex-wrap: wrap; gap: 8px; }
+            .topbar-brand-text .brand-tagline { display: none; }
+            .topbar-bd-panel { order: 3; flex: 1 1 100%; max-width: none; padding: 4px 0 0; }
+            .topbar-bd-progress { max-width: none; }
+            .topbar-actions { order: 2; margin-left: auto; }
+        }
+    </style>
+</head>
+<body>
+<header class="app-topbar">
+    <button type="button" class="topbar-menu" aria-label="Menú">☰</button>
+    <div class="topbar-brand">
+        <img src="imagenes/logo-pa.jpeg" alt="P.A. Perú"
+             onerror="this.onerror=null;this.src='imagenes/logo-pa.svg';">
+        <div class="topbar-brand-text">
+            <span class="brand-name">P.A. Perú</span>
+            <span class="brand-tagline">Profesionales Asociados</span>
+        </div>
+    </div>
+    <div class="topbar-bd-panel" id="topbarBdPanel" aria-live="polite">
+        <div class="topbar-bd-progress topbar-bd-progress--hidden" id="bd-load-progress" aria-hidden="true">
+            <div class="topbar-bd-bar-outer" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-label="Progreso de carga de base de datos">
+                <div class="topbar-bd-bar-inner" id="bd-load-bar-inner"><span class="topbar-bd-pct" id="bd-load-pct-in">0%</span></div>
+            </div>
+            <span class="topbar-bd-pct-outer" id="bd-load-pct" aria-hidden="true">0%</span>
+        </div>
+        <div class="topbar-bd-label">
+            <span class="topbar-bd-label-text">Base de Datos Actual:</span>
+            <span class="topbar-bd-ts is-empty" id="bd-loaded-display">—</span>
+        </div>
+    </div>
+    <div class="topbar-actions">
+        <div class="notif-wrap">
+            <button type="button" class="topbar-notif" id="btnNotif" aria-label="Alertas de vencidos" title="Ver acuerdos vencidos"
+                    onclick="toggleNotifPanel(event)" aria-expanded="false" aria-controls="notifPanel">
+                🔔<span class="notif-badge" id="notifBadge">0</span>
+            </button>
+            <div class="notif-panel" id="notifPanel" role="dialog" aria-label="Acuerdos vencidos">
+                <div class="notif-panel-header">⚠ Acuerdos vencidos</div>
+                <div id="notifList"></div>
+            </div>
+        </div>
+        <div class="topbar-divider" aria-hidden="true"></div>
+        <div class="topbar-user" id="topbarUserBtn" role="button" tabindex="0" title="Clic para cambiar entre LOCAL y Administrador"
+             onclick="toggleUsuarioMode()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleUsuarioMode();}">
+            <span class="topbar-avatar" aria-hidden="true">👤</span>
+            <div class="topbar-user-info">
+                <span id="topbarUserName">LOCAL</span>
+                <span class="topbar-role" id="topbarUserRole">Clic para modo administrador</span>
+            </div>
+            <span class="topbar-chevron" aria-hidden="true">▼</span>
+        </div>
+    </div>
+</header>
+
+<div class="container">
+    <div class="hero-cards">
+        <article class="card-proyecto">
+            <img src="imagenes/PA_Peru_Titulo.jpg" alt="P.A. Perú — Proyecto SET Manantay" class="proyecto-banner-img"
+                 onerror="this.style.display='none';document.getElementById('proyectoFallback').style.display='block';">
+            <div id="proyectoFallback" class="card-proyecto-fallback" style="display:none;">
+            <div class="card-proyecto-head">
+                <span class="card-icon card-icon-blue" aria-hidden="true">📋</span>
+                <span class="card-label">Proyecto</span>
+            </div>
+            <div class="proyecto-nombre" aria-readonly="true">
+                <span id="metaProyectoFallback">CREACIÓN DEL SISTEMA DE SUBTRANSMISIÓN DE LA NUEVA SET MANANTAY 60/22.9/10kV, DISTRITO DE MANANTAY, PROVINCIA DE CORONEL PORTILLO, DEPARTAMENTO DE UCAYALI</span>
+            </div>
+            </div>
+            <span id="metaProyecto" class="meta-proyecto-hidden">CREACIÓN DEL SISTEMA DE SUBTRANSMISIÓN DE LA NUEVA SET MANANTAY 60/22.9/10kV, DISTRITO DE MANANTAY, PROVINCIA DE CORONEL PORTILLO, DEPARTAMENTO DE UCAYALI</span>
+        </article>
+        <article class="card-acta">
+            <div class="card-acta-header">
+                <span class="acta-cal-icon" aria-hidden="true">📅</span>
+                Acta de Reunión Interna
+            </div>
+            <div class="card-acta-body">
+                <div class="acta-field-row">
+                    <span class="acta-field-icon" aria-hidden="true">👥</span>
+                    <div class="acta-field-body">
+                        <label for="metaNum">Reunión N°</label>
+                        <select id="metaNum"></select>
+                    </div>
+                </div>
+                <div class="acta-field-row">
+                    <span class="acta-field-icon" aria-hidden="true">📅</span>
+                    <div class="acta-field-body">
+                        <label for="metaFecha">Fecha de reunión</label>
+                        <input type="date" id="metaFecha" value="2026-04-28">
+                    </div>
+                </div>
+                <div class="acta-field-row">
+                    <span class="acta-field-icon" aria-hidden="true">📍</span>
+                    <div class="acta-field-body">
+                        <label for="metaLugar">Lugar de reunión</label>
+                        <input type="text" id="metaLugar" value="Oficina Manantay">
+                    </div>
+                </div>
+                <div class="acta-field-row">
+                    <span class="acta-field-icon" aria-hidden="true">👤</span>
+                    <div class="acta-field-body">
+                        <label for="metaAutor">Elaborado por</label>
+                        <input type="text" id="metaAutor" value="JCGD">
+                    </div>
+                </div>
+                <div class="acta-field-row acta-asistencia-btn-row">
+                    <span class="acta-field-icon" aria-hidden="true">👥</span>
+                    <div class="acta-field-body">
+                        <label>Asistencia</label>
+                        <button type="button" class="btn btn-asistencia" onclick="openModalAsistencia()">👥 Asistencia</button>
+                    </div>
+                </div>
+            </div>
+        </article>
+    </div>
+
+    <section class="asistencia-acta-wrap" id="asistenciaActaWrap" aria-label="Lista de asistentes">
+        <table class="tbl-asistentes">
+            <thead>
+                <tr><th colspan="2">ASISTENTES</th></tr>
+                <tr><th>Nombre</th><th>Cargo</th></tr>
+            </thead>
+            <tbody id="asistenciaActaBody"></tbody>
+        </table>
+    </section>
+
+    <div class="dashboard" id="dashboard">
+        <div class="kpi total" data-filter="__all__" onclick="setKpiFilter('')" role="button" tabindex="0">
+            <span class="kpi-chevron" aria-hidden="true">›</span>
+            <div class="kpi-top">
+                <span class="kpi-icon-wrap" aria-hidden="true">📋</span>
+                <h3>Total Acuerdos</h3>
+            </div>
+            <div class="value" id="kpiTotal">0</div>
+            <div class="kpi-accent"></div>
+            <p class="kpi-desc">Todos los acuerdos registrados</p>
+        </div>
+        <div class="kpi pending" data-filter="Pendiente" onclick="setKpiFilter('Pendiente')" role="button" tabindex="0">
+            <span class="kpi-chevron" aria-hidden="true">›</span>
+            <div class="kpi-top">
+                <span class="kpi-icon-wrap" aria-hidden="true">⏳</span>
+                <h3>Pendientes</h3>
+            </div>
+            <div class="value" id="kpiPendiente">0</div>
+            <div class="kpi-accent"></div>
+            <p class="kpi-desc">Acuerdos pendientes de atención</p>
+        </div>
+        <div class="kpi process" data-filter="En proceso" onclick="setKpiFilter('En proceso')" role="button" tabindex="0">
+            <span class="kpi-chevron" aria-hidden="true">›</span>
+            <div class="kpi-top">
+                <span class="kpi-icon-wrap" aria-hidden="true">🔄</span>
+                <h3>En Proceso</h3>
+            </div>
+            <div class="value" id="kpiProceso">0</div>
+            <div class="kpi-accent"></div>
+            <p class="kpi-desc">Acuerdos en ejecución</p>
+        </div>
+        <div class="kpi closed" data-filter="Cerrado" onclick="setKpiFilter('Cerrado')" role="button" tabindex="0">
+            <span class="kpi-chevron" aria-hidden="true">›</span>
+            <div class="kpi-top">
+                <span class="kpi-icon-wrap" aria-hidden="true">✅</span>
+                <h3>Cerrados</h3>
+            </div>
+            <div class="value" id="kpiCerrado">0</div>
+            <div class="kpi-accent"></div>
+            <p class="kpi-desc">Acuerdos finalizados</p>
+        </div>
+        <div class="kpi overdue" data-filter="vencido" onclick="setKpiFilter('vencido')" role="button" tabindex="0">
+            <span class="kpi-chevron" aria-hidden="true">›</span>
+            <div class="kpi-top">
+                <span class="kpi-icon-wrap" aria-hidden="true">⚠️</span>
+                <h3>Vencidos</h3>
+            </div>
+            <div class="value" id="kpiVencido">0</div>
+            <div class="kpi-accent"></div>
+            <p class="kpi-desc">Acuerdos vencidos</p>
+        </div>
+    </div>
+
+    <div class="toolbar">
+        <button type="button" class="btn btn-success admin-only" onclick="guardarActa()" title="Guardar acta de esta reunión en memoria local">💾 Guardar acta</button>
+        <button type="button" class="btn btn-primary admin-only" onclick="promptNuevaSeccion('principal')" title="Nueva Sección Principal">➕ Nueva Sección Principal</button>
+        <button type="button" class="btn btn-success" onclick="exportWord()">📄 Exportar Word</button>
+        <button type="button" class="btn btn-excel" onclick="exportExcel()">📊 Exportar Excel</button>
+        <button type="button" class="btn btn-teal admin-only" onclick="guardarBD()">💾 Guardar BD</button>
+        <button type="button" class="btn btn-online admin-only" id="btnGuardarBDOnline" onclick="guardarBDOnline()">☁ GuardarBD Online</button>
+        <label class="btn btn-load admin-only" style="cursor:pointer;">📂 Cargar BD<input type="file" id="importJson" accept=".json" style="display:none" onchange="cargarBD(this)"></label>
+        <div class="spacer"></div>
+        <div class="search-wrap">
+            <input type="text" id="filtroTexto" placeholder="Buscar...">
+        </div>
+        <select id="filtroEstado">
+            <option value="">Todos los estados</option>
+            <option value="Pendiente">Pendiente</option>
+            <option value="En proceso">En proceso</option>
+            <option value="Cerrado">Cerrado</option>
+        </select>
+        <button class="btn btn-print" onclick="window.print()">🖨️ Imprimir</button>
+    </div>
+
+    <div id="tablaContainer"></div>
+</div>
+
+<!-- Modal acuerdo principal -->
+<div class="modal" id="modalForm">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modalTitle">Nuevo Acuerdo</h2>
+            <button class="btn btn-outline btn-icon" onclick="closeModal()">✕</button>
+        </div>
+        <form id="acuerdoForm" onsubmit="guardarAcuerdo(event)">
+            <input type="hidden" id="editAcuerdoId">
+            <input type="hidden" id="ctxPrincipalId">
+            <input type="hidden" id="ctxSecundariaId">
+            <div class="form-grid">
+                <div class="form-group form-full"><label>Acuerdo / Actividad</label><textarea id="fAcuerdo" required></textarea></div>
+                <div class="form-group"><label>Responsable</label><input type="text" id="fResponsable"></div>
+                <div class="form-group"><label>Fecha compromiso</label><input type="date" id="fFecha"></div>
+                <div class="form-group"><label>Entregable</label><input type="text" id="fEntregable"></div>
+                <div class="form-group"><label>Estado</label>
+                    <select id="fEstado"><option>Pendiente</option><option>En proceso</option><option>Cerrado</option></select>
+                </div>
+                <div class="form-group"><label>N.° Carta / Ref.</label><input type="text" id="fDocRef"></div>
+                <div class="form-group form-full"><label>Observaciones</label><textarea id="fObservaciones"></textarea></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" onclick="closeModal()">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal sub-acuerdo -->
+<div class="modal" id="modalSubAcuerdo">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modalSubTitle">Editar Sub-acuerdo</h2>
+            <button type="button" class="btn btn-outline btn-icon" onclick="closeModalSub()">✕</button>
+        </div>
+        <form id="subAcuerdoForm" onsubmit="guardarSubAcuerdoModal(event)">
+            <input type="hidden" id="subCtxPid">
+            <input type="hidden" id="subCtxSid">
+            <input type="hidden" id="subCtxAid">
+            <input type="hidden" id="subEditId">
+            <div class="form-grid">
+                <div class="form-group form-full">
+                    <label>Texto del sub-acuerdo</label>
+                    <textarea id="fsTexto" rows="2" placeholder="Descripción del sub-acuerdo..." required></textarea>
+                </div>
+                <div class="form-group"><label>Responsable</label><input type="text" id="fsResponsable" placeholder="Nombre"></div>
+                <div class="form-group"><label>Fecha compromiso</label><input type="date" id="fsFecha"></div>
+                <div class="form-group"><label>Entregable</label><input type="text" id="fsEntregable" placeholder="Ej. Informe, Borrador"></div>
+                <div class="form-group form-full"><label>Estado</label>
+                    <select id="fsEstado"><option>Pendiente</option><option>En proceso</option><option>Cerrado</option></select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" onclick="closeModalSub()">Cancelar</button>
+                <button type="submit" class="btn btn-primary">💾 Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal asistencia -->
+<div class="modal modal-asistencia" id="modalAsistencia">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Asistencia a la reunión</h2>
+            <button type="button" class="btn btn-outline btn-icon" onclick="closeModalAsistencia()">✕</button>
+        </div>
+        <div class="asistencia-add-row admin-only">
+            <div class="form-group" style="flex:1;margin:0;">
+                <label for="selectAsistenteCatalogo">Seleccionar personal</label>
+                <select id="selectAsistenteCatalogo"></select>
+            </div>
+            <button type="button" class="btn btn-primary" onclick="agregarAsistente()">Agregar</button>
+        </div>
+        <table class="tbl-asistentes-modal">
+            <thead>
+                <tr><th colspan="3">ASISTENTES</th></tr>
+                <tr><th>Nombre</th><th>Cargo</th><th class="admin-only" style="width:90px;">Acción</th></tr>
+            </thead>
+            <tbody id="asistenciaModalBody"></tbody>
+        </table>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" onclick="closeModalAsistencia()">Cerrar</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal contraseña administrador -->
+<div class="modal" id="modalAdminPassword">
+    <div class="modal-content" style="max-width:420px;">
+        <div class="modal-header">
+            <h2>Modo administrador</h2>
+            <button type="button" class="btn btn-outline btn-icon" onclick="closeAdminPasswordModal()">✕</button>
+        </div>
+        <p style="font-size:0.88rem;color:var(--text-muted);margin-bottom:12px;">Introduzca la contraseña para activar el modo <strong>Administrador</strong>.</p>
+        <div class="form-group">
+            <label for="adminPasswordInput">Contraseña</label>
+            <input type="text" id="adminPasswordInput" autocomplete="off" placeholder="Contraseña">
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-outline" onclick="closeAdminPasswordModal()">Cancelar</button>
+            <button type="button" class="btn btn-primary" onclick="submitAdminPassword()">Entrar</button>
+        </div>
+    </div>
+</div>
+
+<!-- Prompt nombre sección -->
+<div class="prompt-overlay" id="promptOverlay">
+    <div class="prompt-box">
+        <h3 id="promptTitle">Nombre</h3>
+        <input type="text" id="promptInput" placeholder="Ingrese el nombre...">
+        <div class="prompt-actions">
+            <button class="btn btn-outline" onclick="closePrompt()">Cancelar</button>
+            <button class="btn btn-primary" onclick="confirmPrompt()">Aceptar</button>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const KEY = 'acta_sema_v3';
+const KEY_ACTAS = 'acta_sema_actas_cache_v1';
+const KEY_USUARIO = 'acta_sema_usuario_modo';
+const KEY_BD_ACTUAL_TS = 'acta_sema_bd_actual_ts';
+const KEY_BD_ONLINE_SAVE_TS = 'acta_sema_bd_online_save_ts';
+const SS_ADMIN_OK = 'acta_sema_admin_ok';
+const USUARIO_LOCAL = 'LOCAL';
+const USUARIO_ADMIN = 'Administrador';
+const ADMIN_PASSWORD = 'deybis25**';
+
+/** Configuración Supabase Storage (BD remota). */
+const SUPABASE = {
+    url: 'https://ubktrbffjrsoubzxjrfz.supabase.co',
+    publishableKey: 'sb_publishable_BqN6s9qDTCSjh1HCuJ_m7Q_knhJjVza',
+    bucket: 'Control-Cartas',
+    filePath: 'BD_ACTAS_REUNION_INTERNA.json'
+};
+
+let estructura = [];
+let kpiFilterActive = '';
+let promptCallback = null;
+let usuarioModo = USUARIO_LOCAL;
+let reunionCargando = false;
+let asistentes = [];
+let bdProgDepth = 0;
+let bdProgIntervalId = null;
+let bdProgFakeVal = 0;
+
+const CATALOGO_ASISTENTES = [
+    { nombre: 'Luis Deybis Aponte Primo', cargo: 'Residente de obra' },
+    { nombre: 'Cesar Augusto Asenjo Portilla', cargo: 'Especialista SET' },
+    { nombre: 'Miguel Angel Cardenas Fernandez', cargo: 'Especialista L.T' },
+    { nombre: 'Luis Quijano Sepulveda', cargo: 'Especialista Civil' },
+    { nombre: 'Freddy Junior Zarate Condor', cargo: 'Administrador' },
+    { nombre: 'Jhan Carlos Gonzales Diaz', cargo: 'Planner' }
+];
+
+const ESTADOS = ['Pendiente', 'En proceso', 'Cerrado'];
+
+function uid() { return Date.now() + Math.random().toString(36).slice(2, 7); }
+
+function hoyISO() { return new Date().toISOString().slice(0, 10); }
+
+function fmtFecha(iso) {
+    if (!iso) return '—';
+    const p = String(iso).split('-');
+    if (p.length === 3) return `${p[2]}/${p[1]}/${p[0]}`;
+    return iso;
+}
+
+function normEstado(e) {
+    if (!e) return 'Pendiente';
+    const s = String(e).trim();
+    if (s.toLowerCase() === 'en proceso' || s.toLowerCase() === 'enproceso') return 'En proceso';
+    if (s.toLowerCase() === 'cerrado') return 'Cerrado';
+    if (s.toLowerCase() === 'pendiente') return 'Pendiente';
+    return s;
+}
+
+function badgeClass(estado, vencido) {
+    if (vencido) return 'vencido';
+    const m = { Pendiente: 'pendiente', 'En proceso': 'proceso', Cerrado: 'cerrado' };
+    return m[normEstado(estado)] || 'pendiente';
+}
+
+function isVencido(fecha, estado) {
+    return fecha && fecha < hoyISO() && normEstado(estado) !== 'Cerrado';
+}
+
+function escapeHtml(s) {
+    if (s == null) return '';
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ─── Usuario LOCAL / Administrador ─── */
+function isUsuarioAdministrador() {
+    return usuarioModo === USUARIO_ADMIN;
+}
+
+function applyUsuarioUI() {
+    document.body.classList.toggle('modo-admin', isUsuarioAdministrador());
+    document.body.classList.toggle('modo-local', !isUsuarioAdministrador());
+    const nameEl = document.getElementById('topbarUserName');
+    const roleEl = document.getElementById('topbarUserRole');
+    if (nameEl) nameEl.textContent = isUsuarioAdministrador() ? USUARIO_ADMIN : USUARIO_LOCAL;
+    if (roleEl) {
+        roleEl.textContent = isUsuarioAdministrador()
+            ? 'Clic para volver a LOCAL'
+            : 'Clic para modo administrador';
+    }
+    renderAsistenciaVista();
+    ['metaFecha', 'metaLugar', 'metaAutor'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.readOnly = !isUsuarioAdministrador();
+    });
+}
+
+function toggleUsuarioMode() {
+    if (isUsuarioAdministrador()) {
+        usuarioModo = USUARIO_LOCAL;
+        localStorage.setItem(KEY_USUARIO, USUARIO_LOCAL);
+        sessionStorage.removeItem(SS_ADMIN_OK);
+        applyUsuarioUI();
+        render();
+        showToast('👤 Modo LOCAL');
+        return;
+    }
+    openAdminPasswordModal();
+}
+
+function openAdminPasswordModal() {
+    const inp = document.getElementById('adminPasswordInput');
+    if (inp) inp.value = '';
+    document.getElementById('modalAdminPassword')?.classList.add('active');
+    setTimeout(() => inp?.focus(), 100);
+}
+
+function closeAdminPasswordModal() {
+    document.getElementById('modalAdminPassword')?.classList.remove('active');
+}
+
+function submitAdminPassword() {
+    const inp = document.getElementById('adminPasswordInput');
+    const pw = inp ? inp.value : '';
+    if (pw !== ADMIN_PASSWORD) {
+        alert('Contraseña incorrecta');
+        return;
+    }
+    sessionStorage.setItem(SS_ADMIN_OK, '1');
+    localStorage.setItem(KEY_USUARIO, USUARIO_ADMIN);
+    usuarioModo = USUARIO_ADMIN;
+    if (inp) inp.value = '';
+    closeAdminPasswordModal();
+    applyUsuarioUI();
+    render();
+    showToast('✅ Modo Administrador activado');
+}
+
+function requireAdmin(actionLabel) {
+    if (isUsuarioAdministrador()) return true;
+    showToast('⚠ Solo administrador puede ' + (actionLabel || 'editar'));
+    return false;
+}
+
+/* ─── Persistencia ─── */
+function getMeta() {
+    return {
+        num: document.getElementById('metaNum').value,
+        fecha: document.getElementById('metaFecha').value,
+        proyecto: document.getElementById('metaProyecto').textContent.trim(),
+        autor: document.getElementById('metaAutor').value,
+        lugar: document.getElementById('metaLugar').value
+    };
+}
+
+function getActasCache() {
+    try {
+        const raw = JSON.parse(localStorage.getItem(KEY_ACTAS) || '{}');
+        return raw && typeof raw === 'object' && !Array.isArray(raw) ? raw : {};
+    } catch {
+        return {};
+    }
+}
+
+function setActasCache(cache) {
+    localStorage.setItem(KEY_ACTAS, JSON.stringify(cache));
+}
+
+function saveDraft() {
+    localStorage.setItem(KEY, JSON.stringify({ meta: getMeta(), estructura, asistentes }));
+}
+
+function setAsistentes(list) {
+    asistentes = Array.isArray(list)
+        ? list.map(a => ({ id: a.id || uid(), nombre: a.nombre || '', cargo: a.cargo || '' }))
+        : [];
+    renderAsistenciaVista();
+}
+
+function initSelectAsistenteCatalogo() {
+    const sel = document.getElementById('selectAsistenteCatalogo');
+    if (!sel) return;
+    sel.innerHTML = '<option value="">— Seleccione un nombre —</option>';
+    CATALOGO_ASISTENTES.forEach((p, i) => {
+        const opt = document.createElement('option');
+        opt.value = String(i);
+        opt.textContent = p.nombre;
+        sel.appendChild(opt);
+    });
+}
+
+function renderAsistenciaVista() {
+    const actaBody = document.getElementById('asistenciaActaBody');
+    const modalBody = document.getElementById('asistenciaModalBody');
+    const emptyHtml = '<tr class="asist-empty"><td colspan="2">Sin asistentes registrados. Use el botón «Asistencia» para agregar personal.</td></tr>';
+    const emptyModalHtml = '<tr class="asist-empty"><td colspan="3">No hay asistentes en la lista.</td></tr>';
+
+    if (actaBody) {
+        if (!asistentes.length) {
+            actaBody.innerHTML = emptyHtml;
+        } else {
+            actaBody.innerHTML = asistentes.map(a => `
+                <tr>
+                    <td>${escapeHtml(a.nombre)}</td>
+                    <td>${escapeHtml(a.cargo)}</td>
+                </tr>
+            `).join('');
+        }
+    }
+
+    if (modalBody) {
+        const colSpan = isUsuarioAdministrador() ? 3 : 2;
+        if (!asistentes.length) {
+            modalBody.innerHTML = `<tr class="asist-empty"><td colspan="${colSpan}">No hay asistentes en la lista.</td></tr>`;
+        } else {
+            modalBody.innerHTML = asistentes.map(a => `
+                <tr>
+                    <td>${escapeHtml(a.nombre)}</td>
+                    <td>${escapeHtml(a.cargo)}</td>
+                    ${isUsuarioAdministrador() ? `<td><button type="button" class="btn-borrar-asist admin-only" onclick="borrarAsistente('${a.id}')">Borrar</button></td>` : ''}
+                </tr>
+            `).join('');
+        }
+    }
+}
+
+function openModalAsistencia() {
+    initSelectAsistenteCatalogo();
+    renderAsistenciaVista();
+    document.getElementById('modalAsistencia')?.classList.add('active');
+}
+
+function closeModalAsistencia() {
+    document.getElementById('modalAsistencia')?.classList.remove('active');
+}
+
+function agregarAsistente() {
+    if (!requireAdmin('registrar asistencia')) return;
+    const sel = document.getElementById('selectAsistenteCatalogo');
+    const idx = sel?.value;
+    if (idx === '' || idx == null) {
+        showToast('⚠ Seleccione un nombre de la lista');
+        return;
+    }
+    const persona = CATALOGO_ASISTENTES[parseInt(idx, 10)];
+    if (!persona) return;
+    if (asistentes.some(a => a.nombre === persona.nombre)) {
+        showToast('⚠ Esta persona ya está en la lista de asistencia');
+        return;
+    }
+    asistentes.push({ id: uid(), nombre: persona.nombre, cargo: persona.cargo });
+    if (sel) sel.value = '';
+    saveDraft();
+    renderAsistenciaVista();
+    showToast('✅ Asistente agregado');
+}
+
+function borrarAsistente(id) {
+    if (!requireAdmin('eliminar asistencia')) return;
+    asistentes = asistentes.filter(a => a.id !== id);
+    saveDraft();
+    renderAsistenciaVista();
+    showToast('🗑️ Asistente eliminado');
+}
+
+function buildAsistenciaWordHtml() {
+    if (!asistentes.length) return '';
+    let rows = asistentes.map(a =>
+        `<tr><td>${escapeHtml(a.nombre)}</td><td>${escapeHtml(a.cargo)}</td></tr>`
+    ).join('');
+    return `
+<div class="sec-asistentes-title">ASISTENTES</div>
+<table class="tbl-asistentes-word">
+  <thead><tr><th>Nombre</th><th>Cargo</th></tr></thead>
+  <tbody>${rows}</tbody>
+</table>`;
+}
+
+function save() {
+    saveDraft();
+}
+
+function guardarActaEnCache(num, payload) {
+    const n = String(num || '').trim();
+    if (!n) return;
+    const cache = getActasCache();
+    cache[n] = {
+        meta: payload.meta,
+        estructura: payload.estructura,
+        asistentes: payload.asistentes || [],
+        guardadoEn: new Date().toISOString()
+    };
+    setActasCache(cache);
+}
+
+function guardarActa() {
+    if (!requireAdmin('guardar el acta')) return;
+    const meta = getMeta();
+    if (!meta.num) {
+        showToast('⚠ Seleccione el número de reunión');
+        return;
+    }
+    guardarActaEnCache(meta.num, { meta, estructura, asistentes });
+    saveDraft();
+    refreshReunionSelect(meta.num);
+    showToast(`💾 Acta reunión N° ${meta.num} guardada en caché local`);
+}
+
+function aplicarMeta(m) {
+    if (!m) return;
+    if (m.num != null && m.num !== '') {
+        reunionCargando = true;
+        refreshReunionSelect(m.num);
+        reunionCargando = false;
+    }
+    if (m.fecha) document.getElementById('metaFecha').value = m.fecha;
+    if (m.proyecto) document.getElementById('metaProyecto').textContent = m.proyecto;
+    if (m.autor) document.getElementById('metaAutor').value = m.autor;
+    if (m.lugar) document.getElementById('metaLugar').value = m.lugar;
+}
+
+function cargarActaPorNum(num, opts) {
+    opts = opts || {};
+    const n = String(num || '').trim();
+    const cache = getActasCache();
+    const acta = cache[n];
+    if (acta?.estructura) {
+        estructura = JSON.parse(JSON.stringify(acta.estructura));
+        setAsistentes(acta.asistentes || []);
+        if (acta.meta) aplicarMeta({ ...acta.meta, num: n });
+        normalizeEstructura();
+        saveDraft();
+        render();
+        if (!opts.silent) showToast(`📂 Acta reunión N° ${n} cargada`);
+        return true;
+    }
+    estructura = [];
+    setAsistentes([]);
+    aplicarMeta({ num: n, fecha: document.getElementById('metaFecha').value, lugar: document.getElementById('metaLugar').value, autor: document.getElementById('metaAutor').value, proyecto: document.getElementById('metaProyecto').textContent.trim() });
+    normalizeEstructura();
+    saveDraft();
+    render();
+    if (!opts.silent) showToast(`ℹ No hay acta guardada para reunión N° ${n}. Puede crear una nueva y usar «Guardar acta».`);
+    return false;
+}
+
+function onReunionNumChange() {
+    if (reunionCargando) return;
+    cargarActaPorNum(document.getElementById('metaNum').value);
+}
+
+function migrateFlatAcuerdos(flat) {
+    const map = {};
+    flat.forEach(a => {
+        const pName = (a.seccion || 'GENERAL').toUpperCase();
+        if (!map[pName]) map[pName] = { id: uid(), titulo: pName, subsecciones: {} };
+        const sName = 'GENERAL';
+        if (!map[pName].subsecciones[sName]) map[pName].subsecciones[sName] = { id: uid(), titulo: sName, acuerdos: [] };
+        map[pName].subsecciones[sName].acuerdos.push({
+            id: a.id || uid(),
+            acuerdo: a.acuerdo || '',
+            responsable: a.responsable || '',
+            fecha: a.fecha || '',
+            entregable: a.entregable || '',
+            estado: normEstado(a.estado),
+            docRef: a.docRef || '',
+            observaciones: a.observaciones || '',
+            subAcuerdos: Array.isArray(a.subAcuerdos) ? a.subAcuerdos : []
+        });
+    });
+    return Object.values(map).map(p => ({
+        id: p.id, titulo: p.titulo,
+        subsecciones: Object.values(p.subsecciones)
+    }));
+}
+
+function seedData() {
+    return [{
+        id: uid(),
+        titulo: 'ASPECTOS GENERALES DE OBRA',
+        subsecciones: [{
+            id: uid(),
+            titulo: 'AMPLIACIÓN DE PLAZO (1)',
+            acuerdos: [
+                {
+                    id: uid(),
+                    acuerdo: 'Sustento por no autorización de ingreso a SET',
+                    responsable: 'Juan, Freddy, Jhan',
+                    fecha: '2026-05-04',
+                    entregable: 'Informe',
+                    estado: 'En proceso',
+                    docRef: 'Carta 142',
+                    observaciones: 'Adjuntar bitácora de ingresos',
+                    subsExpandido: true,
+                    subAcuerdos: [
+                        { id: uid(), texto: 'Seguimiento borrador MDIA', responsable: 'Juan', fecha: '2026-05-01', entregable: 'Borrador', estado: 'Cerrado' },
+                        { id: uid(), texto: 'Revisión técnica sustento SET', responsable: 'Freddy', fecha: '2026-05-03', entregable: 'Revisión', estado: 'Pendiente' }
+                    ]
+                },
+                {
+                    id: uid(),
+                    acuerdo: 'Informe de gestión por trámite de MDIA',
+                    responsable: 'Juan, Deybis',
+                    fecha: '2026-04-30',
+                    entregable: 'Informe',
+                    estado: 'Pendiente',
+                    docRef: '',
+                    observaciones: '',
+                    subAcuerdos: []
+                }
+            ]
+        }]
+    }, {
+        id: uid(),
+        titulo: 'TABLA DE DATOS TÉCNICOS',
+        subsecciones: [{
+            id: uid(),
+            titulo: 'ACTUALIZACIÓN',
+            acuerdos: [{
+                id: uid(),
+                acuerdo: 'Actualizar cuadro de suministro de materiales',
+                responsable: 'Jhan',
+                fecha: '2026-04-22',
+                entregable: 'Excel',
+                estado: 'Cerrado',
+                docRef: '',
+                observaciones: '',
+                subAcuerdos: []
+            }]
+        }]
+    }];
+}
+
+function refreshReunionSelect(valorGuardado) {
+    const sel = document.getElementById('metaNum');
+    if (!sel) return;
+    const cache = getActasCache();
+    const nums = new Set();
+    for (let i = 1; i <= 50; i++) nums.add(String(i));
+    Object.keys(cache).forEach(k => { if (k) nums.add(String(k)); });
+    const ordenados = [...nums].sort((a, b) => {
+        const na = parseInt(a, 10);
+        const nb = parseInt(b, 10);
+        if (!isNaN(na) && !isNaN(nb)) return na - nb;
+        return String(a).localeCompare(String(b), 'es', { numeric: true });
+    });
+    const prev = valorGuardado != null ? String(valorGuardado) : sel.value;
+    sel.innerHTML = '';
+    ordenados.forEach(n => {
+        const opt = document.createElement('option');
+        opt.value = n;
+        opt.textContent = cache[n] ? `${n} ●` : n;
+        sel.appendChild(opt);
+    });
+    const v = prev && ordenados.includes(prev) ? prev : (ordenados.includes('14') ? '14' : ordenados[0] || '1');
+    sel.value = v;
+}
+
+function migrarLegacyASiCache(raw) {
+    if (!raw) return;
+    const cache = getActasCache();
+    const num = raw.meta?.num ? String(raw.meta.num) : '14';
+    if (!cache[num] && (raw.estructura?.length || raw.acuerdos?.length)) {
+        let est = raw.estructura;
+        if (!est?.length && raw.acuerdos?.length) est = migrateFlatAcuerdos(raw.acuerdos);
+        if (est?.length) {
+            cache[num] = { meta: raw.meta || { num }, estructura: est, guardadoEn: new Date().toISOString() };
+            setActasCache(cache);
+        }
+    }
+}
+
+function initFromLocalStorage() {
+    let raw = JSON.parse(localStorage.getItem(KEY) || 'null');
+    if (!raw) {
+        const legacy = JSON.parse(localStorage.getItem('acta_sema_v2') || 'null');
+        if (legacy) raw = legacy;
+    }
+    migrarLegacyASiCache(raw);
+
+    const numInicial = raw?.meta?.num ? String(raw.meta.num) : '14';
+    refreshReunionSelect(numInicial);
+
+    const cache = getActasCache();
+    if (cache[numInicial]?.estructura?.length) {
+        estructura = JSON.parse(JSON.stringify(cache[numInicial].estructura));
+        aplicarMeta(cache[numInicial].meta || { num: numInicial });
+    } else if (raw?.estructura?.length) {
+        estructura = raw.estructura;
+        aplicarMeta(raw.meta || { num: numInicial });
+    } else if (raw?.acuerdos?.length) {
+        estructura = migrateFlatAcuerdos(raw.acuerdos);
+        aplicarMeta(raw.meta || { num: numInicial });
+    } else if (cache[numInicial]) {
+        estructura = JSON.parse(JSON.stringify(cache[numInicial].estructura || []));
+        aplicarMeta(cache[numInicial].meta || { num: numInicial });
+    } else {
+        estructura = seedData();
+        if (raw?.meta) aplicarMeta(raw.meta);
+        else aplicarMeta({ num: numInicial });
+    }
+
+    normalizeEstructura();
+    const asistInicial = cache[numInicial]?.asistentes ?? raw?.asistentes ?? [];
+    setAsistentes(asistInicial);
+}
+
+function finishInitUI() {
+    refreshBdLoadedDisplay();
+    initSelectAsistenteCatalogo();
+    applyUsuarioUI();
+    setupListeners();
+    syncKpiActiveUI();
+    render();
+}
+
+async function init() {
+    sessionStorage.removeItem(SS_ADMIN_OK);
+    usuarioModo = USUARIO_LOCAL;
+    localStorage.setItem(KEY_USUARIO, USUARIO_LOCAL);
+
+    let loadedFromCloud = false;
+    if (_supabaseConfigOk()) {
+        const result = await tryCargarDesdeSupabase({ silent: true });
+        if (result.ok) {
+            loadedFromCloud = true;
+        } else {
+            console.warn('[Supabase] Carga automática:', result.error);
+        }
+    }
+
+    if (!loadedFromCloud) initFromLocalStorage();
+    finishInitUI();
+}
+
+function normalizeEstructura() {
+    estructura.forEach(p => {
+        if (!p.id) p.id = uid();
+        if (!p.subsecciones) p.subsecciones = [];
+        p.subsecciones.forEach(s => {
+            if (!s.id) s.id = uid();
+            if (!s.acuerdos) s.acuerdos = [];
+            s.acuerdos.forEach(a => {
+                if (!a.id) a.id = uid();
+                a.estado = normEstado(a.estado);
+                if (!a.subAcuerdos) a.subAcuerdos = [];
+                if (a.subsExpandido == null) a.subsExpandido = true;
+                a.subAcuerdos.forEach(sa => {
+                    if (!sa.id) sa.id = uid();
+                    sa.estado = normEstado(sa.estado);
+                    if (!sa.texto || sa.texto.trim() === '') sa.texto = 'Sub-acuerdo';
+                    delete sa._edit;
+                });
+            });
+        });
+    });
+}
+
+function findPrincipal(pid) { return estructura.find(p => p.id === pid); }
+function findSecundaria(pid, sid) {
+    const p = findPrincipal(pid);
+    return p?.subsecciones.find(s => s.id === sid);
+}
+function findAcuerdo(pid, sid, aid) {
+    const s = findSecundaria(pid, sid);
+    return s?.acuerdos.find(a => a.id === aid);
+}
+
+/* ─── KPIs ─── */
+function iterAcuerdos(fn) {
+    estructura.forEach(p => p.subsecciones.forEach(s => s.acuerdos.forEach(a => fn(a, p, s))));
+}
+
+function contarItem(estado, fecha, stats) {
+    stats.total++;
+    const est = normEstado(estado);
+    if (est === 'Pendiente') stats.pendiente++;
+    else if (est === 'En proceso') stats.proceso++;
+    else if (est === 'Cerrado') stats.cerrado++;
+    if (isVencido(fecha, estado)) stats.vencido++;
+}
+
+function updateKPIs() {
+    const stats = { total: 0, pendiente: 0, proceso: 0, cerrado: 0, vencido: 0 };
+    iterAcuerdos(a => {
+        contarItem(a.estado, a.fecha, stats);
+        (a.subAcuerdos || []).forEach(sa => contarItem(sa.estado, sa.fecha, stats));
+    });
+    document.getElementById('kpiTotal').textContent = stats.total;
+    document.getElementById('kpiPendiente').textContent = stats.pendiente;
+    document.getElementById('kpiProceso').textContent = stats.proceso;
+    document.getElementById('kpiCerrado').textContent = stats.cerrado;
+    document.getElementById('kpiVencido').textContent = stats.vencido;
+}
+
+function getFiltroActivo() {
+    if (kpiFilterActive === 'vencido') return { tipo: 'vencido' };
+    if (kpiFilterActive) return { tipo: 'estado', valor: kpiFilterActive };
+    const filtroEst = document.getElementById('filtroEstado')?.value || '';
+    if (filtroEst) return { tipo: 'estado', valor: filtroEst };
+    return { tipo: null };
+}
+
+function itemCumpleFiltro(estado, fecha, filtro) {
+    if (!filtro || filtro.tipo === null) return true;
+    if (filtro.tipo === 'vencido') return isVencido(fecha, estado);
+    if (filtro.tipo === 'estado') return normEstado(estado) === normEstado(filtro.valor);
+    return true;
+}
+
+function syncKpiActiveUI() {
+    const filtro = getFiltroActivo();
+    const filtroTxt = (document.getElementById('filtroTexto')?.value || '').trim();
+    document.querySelectorAll('.kpi').forEach(el => {
+        const f = el.dataset.filter;
+        let active = false;
+        if (f === '__all__') {
+            active = filtro.tipo === null && !filtroTxt;
+        } else if (filtro.tipo === 'vencido') {
+            active = f === 'vencido';
+        } else if (filtro.tipo === 'estado') {
+            active = f === filtro.valor;
+        }
+        el.classList.toggle('active', active);
+    });
+}
+
+function setKpiFilter(filter) {
+    if (filter !== '' && kpiFilterActive === filter) filter = '';
+    kpiFilterActive = filter;
+    const sel = document.getElementById('filtroEstado');
+    const txt = document.getElementById('filtroTexto');
+    if (filter === 'vencido' || filter === '') {
+        if (sel) sel.value = '';
+    } else if (sel) {
+        sel.value = filter;
+    }
+    if (filter === '' && txt) txt.value = '';
+    syncKpiActiveUI();
+    render();
+}
+
+function listarVencidos() {
+    const items = [];
+    estructura.forEach(p => {
+        (p.subsecciones || []).forEach(s => {
+            (s.acuerdos || []).forEach(a => {
+                if (isVencido(a.fecha, a.estado)) {
+                    items.push({
+                        principal: p.titulo,
+                        secundaria: s.titulo,
+                        texto: a.acuerdo,
+                        fecha: a.fecha,
+                        responsable: a.responsable,
+                        estado: normEstado(a.estado),
+                        tipo: 'acuerdo'
+                    });
+                }
+                (a.subAcuerdos || []).forEach(sa => {
+                    if (isVencido(sa.fecha, sa.estado)) {
+                        items.push({
+                            principal: p.titulo,
+                            secundaria: s.titulo,
+                            texto: (sa.texto || '').trim() || 'Sub-acuerdo',
+                            fecha: sa.fecha,
+                            responsable: sa.responsable,
+                            estado: normEstado(sa.estado),
+                            tipo: 'sub',
+                            padre: a.acuerdo
+                        });
+                    }
+                });
+            });
+        });
+    });
+    return items;
+}
+
+function updateNotifPanel() {
+    const badge = document.getElementById('notifBadge');
+    const list = document.getElementById('notifList');
+    if (!badge || !list) return;
+    const vencidos = listarVencidos();
+    badge.textContent = String(vencidos.length);
+    badge.classList.toggle('has-items', vencidos.length > 0);
+    if (!vencidos.length) {
+        list.innerHTML = '<div class="notif-panel-empty">No hay acuerdos vencidos</div>';
+        return;
+    }
+    list.innerHTML = vencidos.map((it, i) => `
+        <div class="notif-item" onclick="irAVencido(${i})">
+            <strong>${escapeHtml(it.texto)}</strong>
+            <span class="notif-venc">Vencido: ${escapeHtml(fmtFecha(it.fecha))}</span>
+            <span>${escapeHtml(it.principal)} › ${escapeHtml(it.secundaria)} · ${escapeHtml(it.estado)}</span>
+        </div>
+    `).join('');
+    window._vencidosCache = vencidos;
+}
+
+function toggleNotifPanel(ev) {
+    if (ev) ev.stopPropagation();
+    const panel = document.getElementById('notifPanel');
+    const btn = document.getElementById('btnNotif');
+    if (!panel) return;
+    const open = panel.classList.toggle('open');
+    if (btn) btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    if (open) updateNotifPanel();
+}
+
+function cerrarNotifPanel() {
+    document.getElementById('notifPanel')?.classList.remove('open');
+    document.getElementById('btnNotif')?.setAttribute('aria-expanded', 'false');
+}
+
+function irAVencido(index) {
+    const it = window._vencidosCache?.[index];
+    cerrarNotifPanel();
+    setKpiFilter('vencido');
+    if (it && document.getElementById('filtroTexto')) {
+        const q = (it.texto || '').slice(0, 40);
+        document.getElementById('filtroTexto').value = q;
+        render();
+    }
+}
+
+function textoSub(sa) {
+    return ((sa.texto || '') + sa.responsable + sa.entregable + sa.estado).toLowerCase();
+}
+
+function textoAcuerdo(ac) {
+    return (ac.acuerdo + ac.responsable + ac.docRef + ac.observaciones).toLowerCase();
+}
+
+function filtrarSubsVisible(ac, filtroTxt, filtro) {
+    const hayFiltroEstado = filtro.tipo !== null;
+    const subs = ac.subAcuerdos || [];
+    if (!hayFiltroEstado && !filtroTxt) return subs;
+    return subs.filter(sa => {
+        if (filtroTxt && !textoSub(sa).includes(filtroTxt)) return false;
+        if (hayFiltroEstado && !itemCumpleFiltro(sa.estado, sa.fecha, filtro)) return false;
+        return true;
+    });
+}
+
+function evaluarAcuerdo(ac, filtroTxt, filtro) {
+    const subsAll = ac.subAcuerdos || [];
+    const hayFiltroEstado = filtro.tipo !== null;
+    const subsFiltrados = filtrarSubsVisible(ac, filtroTxt, filtro);
+    const parentTextOk = !filtroTxt || textoAcuerdo(ac).includes(filtroTxt);
+    const parentEstOk = !hayFiltroEstado || itemCumpleFiltro(ac.estado, ac.fecha, filtro);
+    const parentVisible = parentTextOk && parentEstOk;
+
+    if (!filtroTxt && !hayFiltroEstado) {
+        return { showParent: true, subs: subsAll };
+    }
+
+    if (parentVisible) {
+        let subs = subsAll;
+        if (hayFiltroEstado) subs = subsFiltrados;
+        return { showParent: true, subs };
+    }
+
+    if (subsFiltrados.length) {
+        return { showParent: false, subs: subsFiltrados };
+    }
+
+    return { showParent: false, subs: [] };
+}
+
+/* ─── Render ─── */
+function render() {
+    saveDraft();
+    updateKPIs();
+    const container = document.getElementById('tablaContainer');
+    container.innerHTML = '';
+    const filtroTxt = document.getElementById('filtroTexto').value.toLowerCase().trim();
+    const filtro = getFiltroActivo();
+    const hayFiltro = filtroTxt || filtro.tipo !== null;
+    syncKpiActiveUI();
+    updateNotifPanel();
+
+    if (!estructura.length) {
+        container.innerHTML = `<div class="empty-state"><p>No hay secciones. Use <strong>➕ Sección Principal</strong> para comenzar.</p></div>`;
+        return;
+    }
+
+    let hayVisible = false;
+
+    estructura.forEach(principal => {
+        const secBlocks = [];
+        (principal.subsecciones || []).forEach(sec => {
+            const resultados = (sec.acuerdos || [])
+                .map(a => ({ ac: a, ...evaluarAcuerdo(a, filtroTxt, filtro) }))
+                .filter(r => r.showParent || r.subs.length);
+            if (!resultados.length && hayFiltro) return;
+
+            hayVisible = true;
+            let rowsHtml = '';
+            let num = 0;
+            resultados.forEach(({ ac, showParent, subs }) => {
+                const mostrarSubs = subs.length && (ac.subsExpandido !== false || !showParent);
+                if (showParent) {
+                    num++;
+                    rowsHtml += renderAcuerdoRow(principal.id, sec.id, ac, num);
+                }
+                if (mostrarSubs) {
+                    subs.forEach(sa => {
+                        rowsHtml += renderSubAcuerdoRow(principal.id, sec.id, ac.id, sa);
+                    });
+                }
+            });
+
+            if (!resultados.length) {
+                rowsHtml = `<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:16px;">Sin acuerdos. Use «+ Nuevo Acuerdo».</td></tr>`;
+            }
+
+            secBlocks.push(`
+                <div class="secundaria-block" data-sec="${sec.id}">
+                    <div class="secundaria-header">
+                        <div class="title-wrap" onclick="toggleSecundaria('${sec.id}')">
+                            <span class="toggle-icon" id="tog-sec-${sec.id}">▼</span>
+                            <span>${escapeHtml(sec.titulo)}</span>
+                        </div>
+                        <div class="header-actions">
+                            <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();openModalAcuerdo('${principal.id}','${sec.id}')">+ Nuevo Acuerdo</button>
+                            <button class="btn btn-outline btn-sm" onclick="event.stopPropagation();renombrarSecundaria('${principal.id}','${sec.id}')" title="Renombrar">✏️</button>
+                            <button class="btn btn-danger btn-sm" onclick="event.stopPropagation();eliminarSecundaria('${principal.id}','${sec.id}')" title="Eliminar">🗑️</button>
+                            <span class="toggle-icon" style="cursor:pointer;padding:4px 8px;" onclick="toggleSecundaria('${sec.id}')" id="tog-sec-btn-${sec.id}">▼</span>
+                        </div>
+                    </div>
+                    <div class="secundaria-body" id="body-sec-${sec.id}">
+                        <div class="table-wrap">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th style="width:36px">#</th>
+                                        <th>Acuerdo</th>
+                                        <th style="width:130px">Responsable</th>
+                                        <th style="width:115px">Fecha</th>
+                                        <th style="width:95px">Entregable</th>
+                                        <th style="width:105px">Estado</th>
+                                        <th style="width:130px">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>${rowsHtml}</tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            `);
+        });
+
+        if (!secBlocks.length && hayFiltro) return;
+        hayVisible = true;
+
+        container.insertAdjacentHTML('beforeend', `
+            <div class="principal-block" data-pid="${principal.id}">
+                <div class="principal-header">
+                    <div class="title-wrap" onclick="togglePrincipal('${principal.id}')">
+                        <span class="toggle-icon" id="tog-pri-${principal.id}">▼</span>
+                        <span>${escapeHtml(principal.titulo)}</span>
+                    </div>
+                    <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();promptNuevaSeccion('secundaria','${principal.id}')">+ Nueva Sección Secundaria</button>
+                    <button class="btn btn-outline btn-sm" onclick="event.stopPropagation();renombrarPrincipal('${principal.id}')" title="Renombrar">✏️</button>
+                    <button class="btn btn-danger btn-sm" onclick="event.stopPropagation();eliminarPrincipal('${principal.id}')" title="Eliminar">🗑️</button>
+                </div>
+                <div class="principal-body" id="body-pri-${principal.id}">
+                    ${secBlocks.length ? secBlocks.join('') : `<div class="empty-state" style="padding:20px;"><p>Sin subsecciones. Use «+ Sección Secundaria».</p></div>`}
+                </div>
+            </div>
+        `);
+    });
+
+    if (!hayVisible) {
+        container.innerHTML = `<div class="empty-state"><p>No hay resultados para los filtros aplicados.</p></div>`;
+    }
+}
+
+function renderAcuerdoRow(pid, sid, ac, num) {
+    const venc = isVencido(ac.fecha, ac.estado);
+    const ref = ac.docRef ? `<span class="ref-doc">Ref: ${escapeHtml(ac.docRef)}</span>` : '';
+    const obs = ac.observaciones ? `<span class="ref-doc">${escapeHtml(ac.observaciones)}</span>` : '';
+    const warn = venc ? '<span class="warn-icon" title="Vencido">⚠</span>' : '';
+    const subs = ac.subAcuerdos || [];
+    const expanded = ac.subsExpandido !== false;
+    const toggleBtn = subs.length
+        ? `<button type="button" class="btn-toggle-subs" onclick="toggleSubAcuerdos('${pid}','${sid}','${ac.id}')" title="${expanded ? 'Contraer sub-acuerdos' : 'Expandir sub-acuerdos'}">${expanded ? '▼' : '▶'}</button>`
+        : `<span class="btn-toggle-subs empty">▶</span>`;
+    const subsBadge = subs.length ? `<span class="subs-count">${subs.length} sub</span>` : '';
+    const rowClass = subs.length ? 'acuerdo-row has-subs' : 'acuerdo-row';
+    return `
+        <tr class="${rowClass}">
+            <td>${num}</td>
+            <td>
+                <div class="acuerdo-cell">
+                    ${toggleBtn}
+                    <div>
+                        <strong>${escapeHtml(ac.acuerdo)}</strong>${subsBadge}
+                        ${ref}${obs}
+                    </div>
+                </div>
+            </td>
+            <td>${escapeHtml(ac.responsable || '—')}</td>
+            <td class="${venc ? 'fecha-vencida' : ''}">${fmtFecha(ac.fecha)}${warn}</td>
+            <td>${escapeHtml(ac.entregable || '—')}</td>
+            <td><span class="badge badge-${badgeClass(ac.estado, venc)}">${escapeHtml(normEstado(ac.estado))}</span></td>
+            <td class="actions">
+                <button type="button" class="btn-act-edit" onclick="openModalAcuerdo('${pid}','${sid}','${ac.id}')" title="Editar acuerdo">✏️</button>
+                <button type="button" class="btn-act-del" onclick="eliminarAcuerdo('${pid}','${sid}','${ac.id}')" title="Eliminar">🗑️</button>
+                <button type="button" class="btn-add-sub" onclick="agregarSubAcuerdo('${pid}','${sid}','${ac.id}')" title="Agregar sub-acuerdo">+</button>
+            </td>
+        </tr>
+    `;
+}
+
+function renderSubAcuerdoRow(pid, sid, aid, sa) {
+    const venc = isVencido(sa.fecha, sa.estado);
+    const warn = venc ? '<span class="warn-icon" title="Vencido">⚠</span>' : '';
+    const texto = (sa.texto || '').trim() || 'Sub-acuerdo';
+    const isDefault = texto === 'Sub-acuerdo';
+    return `
+        <tr class="sub-acuerdo-row" data-said="${sa.id}" data-aid="${aid}">
+            <td></td>
+            <td>
+                <div class="sub-indent">
+                    <span class="sub-texto${isDefault ? ' placeholder' : ''}">${escapeHtml(texto)}</span>
+                </div>
+            </td>
+            <td>${escapeHtml(sa.responsable || '—')}</td>
+            <td class="${venc ? 'fecha-vencida' : ''}">${fmtFecha(sa.fecha)}${warn}</td>
+            <td>${escapeHtml(sa.entregable || '—')}</td>
+            <td><span class="badge badge-${badgeClass(sa.estado, venc)}">${escapeHtml(normEstado(sa.estado))}</span></td>
+            <td class="actions">
+                <button type="button" class="btn-act-edit" onclick="editarSubAcuerdo('${pid}','${sid}','${aid}','${sa.id}')" title="Editar sub-acuerdo">✏️</button>
+                <button type="button" class="btn-act-del" onclick="eliminarSubAcuerdo('${pid}','${sid}','${aid}','${sa.id}')" title="Eliminar">🗑️</button>
+                <button type="button" class="btn-add-sub" onclick="agregarSubAcuerdo('${pid}','${sid}','${aid}')" title="Agregar sub-acuerdo">+</button>
+            </td>
+        </tr>
+    `;
+}
+
+/* ─── Toggle collapse ─── */
+function togglePrincipal(id) {
+    const body = document.getElementById('body-pri-' + id);
+    const icon = document.getElementById('tog-pri-' + id);
+    if (!body) return;
+    body.classList.toggle('collapsed');
+    if (icon) icon.textContent = body.classList.contains('collapsed') ? '▶' : '▼';
+}
+
+function toggleSecundaria(id) {
+    const body = document.getElementById('body-sec-' + id);
+    const icon = document.getElementById('tog-sec-' + id);
+    const iconBtn = document.getElementById('tog-sec-btn-' + id);
+    if (!body) return;
+    body.classList.toggle('collapsed');
+    const sym = body.classList.contains('collapsed') ? '▶' : '▼';
+    if (icon) icon.textContent = sym;
+    if (iconBtn) iconBtn.textContent = sym;
+}
+
+/* ─── Secciones ─── */
+let promptCtx = { tipo: '', principalId: null };
+
+function promptNuevaSeccion(tipo, principalId = null) {
+    if (!requireAdmin('crear secciones')) return;
+    promptCtx = { tipo, principalId };
+    document.getElementById('promptTitle').textContent = tipo === 'principal'
+        ? 'Nueva Sección Principal' : 'Nueva Sección Secundaria';
+    document.getElementById('promptInput').value = '';
+    document.getElementById('promptOverlay').classList.add('active');
+    setTimeout(() => document.getElementById('promptInput').focus(), 100);
+}
+
+function closePrompt() {
+    document.getElementById('promptOverlay').classList.remove('active');
+    promptCallback = null;
+}
+
+function confirmPrompt() {
+    if (!requireAdmin('crear secciones')) return;
+    const nombre = document.getElementById('promptInput').value.trim();
+    if (!nombre) { showToast('⚠ Ingrese un nombre'); return; }
+    if (promptCtx.tipo === 'principal') {
+        estructura.push({ id: uid(), titulo: nombre.toUpperCase(), subsecciones: [] });
+        showToast('✅ Sección principal creada');
+    } else {
+        const p = findPrincipal(promptCtx.principalId);
+        if (p) {
+            p.subsecciones.push({ id: uid(), titulo: nombre.toUpperCase(), acuerdos: [] });
+            showToast('✅ Sección secundaria creada');
+        }
+    }
+    closePrompt();
+    render();
+}
+
+function renombrarPrincipal(pid) {
+    if (!requireAdmin('renombrar')) return;
+    const p = findPrincipal(pid);
+    if (!p) return;
+    const n = prompt('Nuevo nombre de sección principal:', p.titulo);
+    if (n?.trim()) { p.titulo = n.trim().toUpperCase(); render(); showToast('✅ Actualizado'); }
+}
+
+function renombrarSecundaria(pid, sid) {
+    if (!requireAdmin('renombrar')) return;
+    const s = findSecundaria(pid, sid);
+    if (!s) return;
+    const n = prompt('Nuevo nombre de sección secundaria:', s.titulo);
+    if (n?.trim()) { s.titulo = n.trim().toUpperCase(); render(); showToast('✅ Actualizado'); }
+}
+
+function eliminarPrincipal(pid) {
+    if (!requireAdmin('eliminar')) return;
+    if (!confirm('¿Eliminar esta sección principal y todo su contenido?')) return;
+    estructura = estructura.filter(p => p.id !== pid);
+    render();
+    showToast('🗑️ Sección eliminada');
+}
+
+function eliminarSecundaria(pid, sid) {
+    if (!requireAdmin('eliminar')) return;
+    if (!confirm('¿Eliminar esta sección secundaria y sus acuerdos?')) return;
+    const p = findPrincipal(pid);
+    if (p) p.subsecciones = p.subsecciones.filter(s => s.id !== sid);
+    render();
+    showToast('🗑️ Subsección eliminada');
+}
+
+/* ─── Acuerdos ─── */
+function openModalAcuerdo(pid, sid, aid = null) {
+    if (!requireAdmin('editar acuerdos')) return;
+    document.getElementById('ctxPrincipalId').value = pid;
+    document.getElementById('ctxSecundariaId').value = sid;
+    document.getElementById('editAcuerdoId').value = aid || '';
+    document.getElementById('acuerdoForm').reset();
+    document.getElementById('ctxPrincipalId').value = pid;
+    document.getElementById('ctxSecundariaId').value = sid;
+    if (aid) {
+        const ac = findAcuerdo(pid, sid, aid);
+        if (!ac) return;
+        document.getElementById('fAcuerdo').value = ac.acuerdo;
+        document.getElementById('fResponsable').value = ac.responsable || '';
+        document.getElementById('fFecha').value = ac.fecha || '';
+        document.getElementById('fEntregable').value = ac.entregable || '';
+        document.getElementById('fEstado').value = normEstado(ac.estado);
+        document.getElementById('fDocRef').value = ac.docRef || '';
+        document.getElementById('fObservaciones').value = ac.observaciones || '';
+        document.getElementById('modalTitle').textContent = 'Editar Acuerdo';
+    } else {
+        document.getElementById('modalTitle').textContent = 'Nuevo Acuerdo';
+    }
+    document.getElementById('modalForm').classList.add('active');
+}
+
+function closeModal() { document.getElementById('modalForm').classList.remove('active'); }
+
+function guardarAcuerdo(e) {
+    e.preventDefault();
+    if (!requireAdmin('guardar acuerdos')) return;
+    const pid = document.getElementById('ctxPrincipalId').value;
+    const sid = document.getElementById('ctxSecundariaId').value;
+    const aid = document.getElementById('editAcuerdoId').value;
+    const sec = findSecundaria(pid, sid);
+    if (!sec) return;
+
+    const data = {
+        acuerdo: document.getElementById('fAcuerdo').value.trim(),
+        responsable: document.getElementById('fResponsable').value.trim(),
+        fecha: document.getElementById('fFecha').value,
+        entregable: document.getElementById('fEntregable').value.trim(),
+        estado: normEstado(document.getElementById('fEstado').value),
+        docRef: document.getElementById('fDocRef').value.trim(),
+        observaciones: document.getElementById('fObservaciones').value.trim()
+    };
+
+    if (aid) {
+        const ac = findAcuerdo(pid, sid, aid);
+        Object.assign(ac, data);
+    } else {
+        sec.acuerdos.push({ id: uid(), ...data, subAcuerdos: [] });
+    }
+    closeModal();
+    render();
+    showToast('✅ Acuerdo guardado');
+}
+
+function eliminarAcuerdo(pid, sid, aid) {
+    if (!requireAdmin('eliminar')) return;
+    if (!confirm('¿Eliminar este acuerdo y todos sus sub-acuerdos asociados?')) return;
+    const sec = findSecundaria(pid, sid);
+    if (!sec) return;
+    const idx = sec.acuerdos.findIndex(a => String(a.id) === String(aid));
+    if (idx === -1) return;
+    const ac = sec.acuerdos[idx];
+    if (ac.subAcuerdos) ac.subAcuerdos = [];
+    sec.acuerdos.splice(idx, 1);
+    save();
+    render();
+    showToast('🗑️ Acuerdo y sub-acuerdos eliminados');
+}
+
+function cambiarEstadoAcuerdo(pid, sid, aid) {
+    const ac = findAcuerdo(pid, sid, aid);
+    if (!ac) return;
+    const i = ESTADOS.indexOf(normEstado(ac.estado));
+    ac.estado = ESTADOS[(i + 1) % ESTADOS.length];
+    render();
+    showToast('🔄 Estado: ' + ac.estado);
+}
+
+/* ─── Sub-acuerdos ─── */
+function toggleSubAcuerdos(pid, sid, aid) {
+    const ac = findAcuerdo(pid, sid, aid);
+    if (!ac || !(ac.subAcuerdos || []).length) return;
+    const expanded = ac.subsExpandido !== false;
+    ac.subsExpandido = !expanded;
+    render();
+}
+
+function openModalSubAcuerdo(pid, sid, aid, said = null) {
+    if (!requireAdmin('editar sub-acuerdos')) return;
+    document.getElementById('subCtxPid').value = pid;
+    document.getElementById('subCtxSid').value = sid;
+    document.getElementById('subCtxAid').value = aid;
+    document.getElementById('subEditId').value = said || '';
+    document.getElementById('subAcuerdoForm').reset();
+    document.getElementById('subCtxPid').value = pid;
+    document.getElementById('subCtxSid').value = sid;
+    document.getElementById('subCtxAid').value = aid;
+    document.getElementById('subEditId').value = said || '';
+
+    if (said) {
+        const sa = findAcuerdo(pid, sid, aid)?.subAcuerdos?.find(s => s.id === said);
+        if (!sa) return;
+        document.getElementById('fsTexto').value = sa.texto || '';
+        document.getElementById('fsResponsable').value = sa.responsable || '';
+        document.getElementById('fsFecha').value = sa.fecha || '';
+        document.getElementById('fsEntregable').value = sa.entregable || '';
+        document.getElementById('fsEstado').value = normEstado(sa.estado);
+        document.getElementById('modalSubTitle').textContent = 'Editar Sub-acuerdo';
+    } else {
+        document.getElementById('fsTexto').value = '';
+        document.getElementById('fsFecha').value = hoyISO();
+        document.getElementById('fsEstado').value = 'Pendiente';
+        document.getElementById('modalSubTitle').textContent = 'Nuevo Sub-acuerdo';
+    }
+    document.getElementById('modalSubAcuerdo').classList.add('active');
+    setTimeout(() => document.getElementById('fsTexto').focus(), 80);
+}
+
+function closeModalSub() {
+    document.getElementById('modalSubAcuerdo').classList.remove('active');
+}
+
+function agregarSubAcuerdo(pid, sid, aid) {
+    if (!requireAdmin('agregar sub-acuerdos')) return;
+    const ac = findAcuerdo(pid, sid, aid);
+    if (!ac) return;
+    if (!ac.subAcuerdos) ac.subAcuerdos = [];
+    ac.subsExpandido = true;
+    openModalSubAcuerdo(pid, sid, aid, null);
+}
+
+function editarSubAcuerdo(pid, sid, aid, said) {
+    if (!requireAdmin('editar sub-acuerdos')) return;
+    openModalSubAcuerdo(pid, sid, aid, said);
+}
+
+function guardarSubAcuerdoModal(e) {
+    e.preventDefault();
+    if (!requireAdmin('guardar sub-acuerdos')) return;
+    const pid = document.getElementById('subCtxPid').value;
+    const sid = document.getElementById('subCtxSid').value;
+    const aid = document.getElementById('subCtxAid').value;
+    const said = document.getElementById('subEditId').value;
+    const ac = findAcuerdo(pid, sid, aid);
+    if (!ac) return;
+    if (!ac.subAcuerdos) ac.subAcuerdos = [];
+
+    const data = {
+        texto: document.getElementById('fsTexto').value.trim(),
+        responsable: document.getElementById('fsResponsable').value.trim(),
+        fecha: document.getElementById('fsFecha').value,
+        entregable: document.getElementById('fsEntregable').value.trim(),
+        estado: normEstado(document.getElementById('fsEstado').value)
+    };
+    if (!data.texto) {
+        showToast('⚠ Ingrese el texto del sub-acuerdo');
+        return;
+    }
+
+    if (said) {
+        const sa = ac.subAcuerdos.find(s => s.id === said);
+        if (sa) Object.assign(sa, data);
+    } else {
+        ac.subAcuerdos.push({ id: uid(), ...data });
+    }
+    ac.subsExpandido = true;
+    closeModalSub();
+    render();
+    showToast('✅ Sub-acuerdo guardado');
+}
+
+function eliminarSubAcuerdo(pid, sid, aid, said) {
+    if (!requireAdmin('eliminar')) return;
+    if (!confirm('¿Eliminar este sub-acuerdo?')) return;
+    const ac = findAcuerdo(pid, sid, aid);
+    if (ac) ac.subAcuerdos = ac.subAcuerdos.filter(s => s.id !== said);
+    render();
+    showToast('🗑️ Sub-acuerdo eliminado');
+}
+
+/* ─── Supabase Storage ─── */
+function _supabaseConfigOk() {
+    return !!(SUPABASE && SUPABASE.url && SUPABASE.publishableKey && SUPABASE.bucket && SUPABASE.filePath);
+}
+
+function _encodeStorageObjectPath(filePath) {
+    return String(filePath).split('/').filter(Boolean).map(encodeURIComponent).join('/');
+}
+
+function _supabaseStorageObjectUrl() {
+    const base = String(SUPABASE.url || '').replace(/\/$/, '');
+    const bucketEnc = encodeURIComponent(SUPABASE.bucket);
+    const pathEnc = _encodeStorageObjectPath(SUPABASE.filePath);
+    return `${base}/storage/v1/object/${bucketEnc}/${pathEnc}`;
+}
+
+function formatBdActualTs(date) {
+    const d = date instanceof Date ? date : new Date(date);
+    if (Number.isNaN(d.getTime())) return '—';
+    const pad = n => String(n).padStart(2, '0');
+    return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+}
+
+function setBdActualTimestamp(date, opts) {
+    opts = opts || {};
+    const d = date instanceof Date ? date : new Date(date);
+    if (Number.isNaN(d.getTime())) return;
+    const ms = String(d.getTime());
+    try {
+        localStorage.setItem(KEY_BD_ACTUAL_TS, ms);
+        if (opts.esGuardadoOnline) {
+            localStorage.setItem(KEY_BD_ONLINE_SAVE_TS, ms);
+        }
+    } catch (e) { /* ignore */ }
+    refreshBdLoadedDisplay();
+}
+
+function refreshBdLoadedDisplay() {
+    const el = document.getElementById('bd-loaded-display');
+    const panel = document.getElementById('topbarBdPanel');
+    if (!el) return;
+    let ms = NaN;
+    try {
+        const online = localStorage.getItem(KEY_BD_ONLINE_SAVE_TS);
+        const general = localStorage.getItem(KEY_BD_ACTUAL_TS);
+        ms = parseInt(online || general || '', 10);
+    } catch (e) { /* ignore */ }
+    if (!Number.isFinite(ms)) {
+        el.textContent = '—';
+        el.classList.add('is-empty');
+        if (panel) panel.removeAttribute('title');
+        return;
+    }
+    const formatted = formatBdActualTs(new Date(ms));
+    el.textContent = formatted;
+    el.classList.remove('is-empty');
+    if (panel) panel.title = 'Base de Datos Actual: ' + formatted;
+}
+
+function _bdProgressSetPct(p) {
+    const inner = document.getElementById('bd-load-bar-inner');
+    const pctIn = document.getElementById('bd-load-pct-in');
+    const pctOut = document.getElementById('bd-load-pct');
+    const bar = document.querySelector('#bd-load-progress [role="progressbar"]');
+    const v = Math.max(0, Math.min(100, Math.round(p)));
+    const label = v + '%';
+    if (inner) inner.style.width = v + '%';
+    if (pctIn) pctIn.textContent = label;
+    if (pctOut) pctOut.textContent = label;
+    if (bar) bar.setAttribute('aria-valuenow', String(v));
+}
+
+function bdProgressBegin() {
+    bdProgDepth += 1;
+    if (bdProgDepth !== 1) return;
+    const wrap = document.getElementById('bd-load-progress');
+    if (!wrap) return;
+    wrap.classList.remove('topbar-bd-progress--hidden');
+    wrap.setAttribute('aria-hidden', 'false');
+    bdProgFakeVal = 0;
+    _bdProgressSetPct(0);
+    if (bdProgIntervalId) clearInterval(bdProgIntervalId);
+    bdProgIntervalId = setInterval(() => {
+        if (bdProgFakeVal < 92) {
+            bdProgFakeVal += Math.random() * 8 + 2;
+            if (bdProgFakeVal > 92) bdProgFakeVal = 92;
+            _bdProgressSetPct(bdProgFakeVal);
+        }
+    }, 140);
+}
+
+function bdProgressFinish() {
+    bdProgDepth = Math.max(0, bdProgDepth - 1);
+    if (bdProgDepth > 0) return;
+    if (bdProgIntervalId) {
+        clearInterval(bdProgIntervalId);
+        bdProgIntervalId = null;
+    }
+    _bdProgressSetPct(100);
+    setTimeout(() => {
+        const wrap = document.getElementById('bd-load-progress');
+        if (wrap) {
+            wrap.classList.add('topbar-bd-progress--hidden');
+            wrap.setAttribute('aria-hidden', 'true');
+        }
+        _bdProgressSetPct(0);
+    }, 450);
+}
+
+function _timestampFromPayload(payload) {
+    if (!payload || typeof payload !== 'object') return null;
+    if (payload.guardadoOnlineEn) return new Date(payload.guardadoOnlineEn);
+    if (payload.exportadoEn) return new Date(payload.exportadoEn);
+    return null;
+}
+
+async function _fetchSupabasePayload() {
+    const base = String(SUPABASE.url || '').replace(/\/$/, '');
+    const bucketEnc = encodeURIComponent(SUPABASE.bucket);
+    const pathEnc = _encodeStorageObjectPath(SUPABASE.filePath);
+    const attempts = [
+        {
+            url: `${base}/storage/v1/object/${bucketEnc}/${pathEnc}`,
+            headers: {
+                apikey: SUPABASE.publishableKey,
+                Authorization: `Bearer ${SUPABASE.publishableKey}`
+            }
+        },
+        {
+            url: `${base}/storage/v1/object/public/${bucketEnc}/${pathEnc}`,
+            headers: {}
+        }
+    ];
+    let lastErr = '';
+    for (const { url, headers } of attempts) {
+        try {
+            const resp = await fetch(url, { method: 'GET', mode: 'cors', cache: 'no-store', headers });
+            if (!resp.ok) {
+                lastErr = `HTTP ${resp.status}`;
+                continue;
+            }
+            const text = await resp.text();
+            if (!text || text.length < 5) {
+                lastErr = 'Respuesta vacía';
+                continue;
+            }
+            if (text.trim().startsWith('<')) {
+                lastErr = 'El servidor devolvió HTML en lugar de JSON.';
+                continue;
+            }
+            let payload = null;
+            try { payload = JSON.parse(text); }
+            catch (_) { lastErr = 'JSON inválido.'; continue; }
+            return { payload, error: null };
+        } catch (err) {
+            lastErr = err.message || 'Error de red';
+        }
+    }
+    return { payload: null, error: lastErr || 'No se pudo descargar el archivo desde Supabase.' };
+}
+
+function _applySupabasePayload(payload) {
+    if (!payload) return { ok: false, error: 'Sin datos en el archivo remoto.' };
+    try {
+        if (payload.actas && typeof payload.actas === 'object') {
+            const count = Object.keys(payload.actas).length;
+            importarConsolidado(payload, { silent: true });
+            return { ok: true, count };
+        }
+        importarActaUnica(payload, { silent: true });
+        return { ok: true, count: 1 };
+    } catch (err) {
+        return { ok: false, error: err.message || 'No se pudo aplicar la BD.' };
+    }
+}
+
+async function tryCargarDesdeSupabase(opts) {
+    opts = opts || {};
+    if (!_supabaseConfigOk()) {
+        return { ok: false, error: 'Configuración SUPABASE incompleta.' };
+    }
+    bdProgressBegin();
+    try {
+        const { payload, error } = await _fetchSupabasePayload();
+        if (!payload) {
+            return { ok: false, error: error || 'No se pudo descargar la BD.' };
+        }
+        _bdProgressSetPct(96);
+        const applied = _applySupabasePayload(payload);
+        if (!applied.ok) return { ok: false, error: applied.error };
+        const ts = _timestampFromPayload(payload);
+        if (ts && !Number.isNaN(ts.getTime())) setBdActualTimestamp(ts, { esGuardadoOnline: true });
+        const fileName = SUPABASE.filePath.split('/').filter(Boolean).pop() || 'BD.json';
+        if (!opts.silent) showToast(`☁ ${applied.count} acta(s) desde Supabase`);
+        return { ok: true, count: applied.count, fileName };
+    } finally {
+        bdProgressFinish();
+    }
+}
+
+async function guardarBDOnline() {
+    if (!requireAdmin('guardar la base de datos en Supabase')) return;
+    if (!_supabaseConfigOk()) {
+        alert('Revise la configuración SUPABASE (url, clave, bucket, filePath).');
+        return;
+    }
+    const btn = document.getElementById('btnGuardarBDOnline');
+    if (btn) btn.disabled = true;
+    bdProgressBegin();
+    let prevOnlineTs = null;
+    try {
+        prevOnlineTs = localStorage.getItem(KEY_BD_ONLINE_SAVE_TS);
+    } catch (e) { /* ignore */ }
+    try {
+        const savedAt = new Date();
+        setBdActualTimestamp(savedAt, { esGuardadoOnline: true });
+        const data = buildConsolidadoBD();
+        data.guardadoOnlineEn = savedAt.toISOString();
+        data.exportadoEn = savedAt.toISOString();
+        _bdProgressSetPct(35);
+        const json = JSON.stringify(data, null, 2);
+        _bdProgressSetPct(55);
+        const resp = await fetch(_supabaseStorageObjectUrl(), {
+            method: 'POST',
+            mode: 'cors',
+            cache: 'no-store',
+            headers: {
+                apikey: SUPABASE.publishableKey,
+                Authorization: `Bearer ${SUPABASE.publishableKey}`,
+                'Content-Type': 'application/json; charset=utf-8',
+                'x-upsert': 'true'
+            },
+            body: json
+        });
+        if (!resp.ok) {
+            let msg = `HTTP ${resp.status}`;
+            try {
+                const errBody = await resp.json();
+                if (errBody?.message) msg = errBody.message;
+                else if (typeof errBody?.error === 'string') msg = errBody.error;
+            } catch (_) {}
+            if (prevOnlineTs) {
+                setBdActualTimestamp(new Date(parseInt(prevOnlineTs, 10)), { esGuardadoOnline: true });
+            } else {
+                try { localStorage.removeItem(KEY_BD_ONLINE_SAVE_TS); } catch (e) { /* ignore */ }
+                refreshBdLoadedDisplay();
+            }
+            alert(`No se pudo subir la BD a Supabase.\n${msg}\nVerifique políticas de Storage (insert/update) en el bucket.`);
+            return;
+        }
+        const completedAt = new Date();
+        data.guardadoOnlineEn = completedAt.toISOString();
+        data.exportadoEn = completedAt.toISOString();
+        setBdActualTimestamp(completedAt, { esGuardadoOnline: true });
+        const nums = Object.keys(data.actas || {});
+        showToast(`☁ GuardarBD Online: ${nums.length} acta(s) en ${SUPABASE.filePath}`);
+    } catch (err) {
+        alert('Error al guardar en Supabase: ' + (err.message || err));
+    } finally {
+        bdProgressFinish();
+        if (btn) btn.disabled = false;
+    }
+}
+
+/* ─── BD / Export ─── */
+function buildConsolidadoBD() {
+    const cache = getActasCache();
+    const metaActual = getMeta();
+    if (metaActual.num) {
+        cache[String(metaActual.num)] = {
+            meta: metaActual,
+            estructura: JSON.parse(JSON.stringify(estructura)),
+            asistentes: JSON.parse(JSON.stringify(asistentes)),
+            guardadoEn: new Date().toISOString()
+        };
+        setActasCache(cache);
+    }
+    return {
+        tipo: 'acta_sema_consolidado',
+        version: 1,
+        exportadoEn: new Date().toISOString(),
+        proyecto: metaActual.proyecto,
+        actas: cache
+    };
+}
+
+function guardarBD() {
+    if (!requireAdmin('exportar la base de datos')) return;
+    const data = buildConsolidadoBD();
+    const nums = Object.keys(data.actas || {}).sort((a, b) => parseInt(a, 10) - parseInt(b, 10));
+    const nombre = nums.length
+        ? `Actas_Reuniones_${nums[0]}_${nums[nums.length - 1]}_consolidado.json`
+        : 'Actas_Reuniones_consolidado.json';
+    download(JSON.stringify(data, null, 2), nombre, 'application/json');
+    refreshReunionSelect(getMeta().num);
+    showToast(`💾 Consolidado de ${nums.length} acta(s) descargado`);
+}
+
+function importarActaUnica(data, opts) {
+    opts = opts || {};
+    const m = data.meta || {};
+    const num = m.num ? String(m.num) : String(document.getElementById('metaNum').value || '1');
+    let est = data.estructura;
+    if (!est?.length && data.acuerdos?.length) est = migrateFlatAcuerdos(data.acuerdos);
+    guardarActaEnCache(num, { meta: { ...m, num }, estructura: est || [], asistentes: data.asistentes || [] });
+    refreshReunionSelect(num);
+    cargarActaPorNum(num, { silent: !!opts.silent });
+}
+
+function importarConsolidado(data, opts) {
+    opts = opts || {};
+    const actas = data.actas || {};
+    const cache = getActasCache();
+    Object.keys(actas).forEach(num => {
+        const item = actas[num];
+        if (!item) return;
+        let est = item.estructura;
+        if (!est?.length && item.acuerdos?.length) est = migrateFlatAcuerdos(item.acuerdos);
+        cache[String(num)] = {
+            meta: { ...(item.meta || {}), num: String(num) },
+            estructura: est || [],
+            asistentes: item.asistentes || [],
+            guardadoEn: item.guardadoEn || new Date().toISOString()
+        };
+    });
+    setActasCache(cache);
+    const nums = Object.keys(cache).sort((a, b) => parseInt(a, 10) - parseInt(b, 10));
+    const primero = nums[nums.length - 1] || getMeta().num || '14';
+    refreshReunionSelect(primero);
+    cargarActaPorNum(primero, { silent: !!opts.silent });
+    if (!opts.silent) showToast(`📂 ${nums.length} acta(s) importadas al caché local`);
+}
+
+function cargarBD(input) {
+    if (!requireAdmin('cargar la base de datos')) return;
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+        try {
+            const data = JSON.parse(e.target.result);
+            if (data.actas && typeof data.actas === 'object') {
+                importarConsolidado(data);
+            } else {
+                importarActaUnica(data);
+                showToast('📂 Acta importada al caché local');
+            }
+        } catch {
+            alert('Archivo JSON inválido');
+        }
+    };
+    reader.readAsText(file);
+    input.value = '';
+}
+
+function getExportStats() {
+    const stats = { total: 0, pendiente: 0, proceso: 0, cerrado: 0, vencido: 0 };
+    iterAcuerdos(a => {
+        contarItem(a.estado, a.fecha, stats);
+        (a.subAcuerdos || []).forEach(sa => contarItem(sa.estado, sa.fecha, stats));
+    });
+    return stats;
+}
+
+function collectExportRows() {
+    const meta = getMeta();
+    const rows = [];
+    estructura.forEach(p => {
+        (p.subsecciones || []).forEach(s => {
+            let n = 0;
+            (s.acuerdos || []).forEach(a => {
+                n++;
+                rows.push({
+                    reunion: meta.num,
+                    fechaReunion: fmtFecha(meta.fecha),
+                    lugar: meta.lugar,
+                    elaborado: meta.autor,
+                    proyecto: meta.proyecto,
+                    seccionPrincipal: p.titulo,
+                    seccionSecundaria: s.titulo,
+                    item: n,
+                    tipo: 'Acuerdo',
+                    acuerdo: a.acuerdo,
+                    responsable: a.responsable || '',
+                    fecha: fmtFecha(a.fecha),
+                    fechaIso: a.fecha || '',
+                    entregable: a.entregable || '',
+                    estado: normEstado(a.estado),
+                    docRef: a.docRef || '',
+                    observaciones: a.observaciones || ''
+                });
+                (a.subAcuerdos || []).forEach(sa => {
+                    rows.push({
+                        reunion: meta.num,
+                        fechaReunion: fmtFecha(meta.fecha),
+                        lugar: meta.lugar,
+                        elaborado: meta.autor,
+                        proyecto: meta.proyecto,
+                        seccionPrincipal: p.titulo,
+                        seccionSecundaria: s.titulo,
+                        item: n,
+                        tipo: 'Sub-acuerdo',
+                        acuerdo: (sa.texto || '').trim() || 'Sub-acuerdo',
+                        responsable: sa.responsable || '',
+                        fecha: fmtFecha(sa.fecha),
+                        fechaIso: sa.fecha || '',
+                        entregable: sa.entregable || '',
+                        estado: normEstado(sa.estado),
+                        docRef: '',
+                        observaciones: ''
+                    });
+                });
+            });
+        });
+    });
+    return rows;
+}
+
+function fetchImageAsBase64(src) {
+    return fetch(src)
+        .then(r => r.ok ? r.blob() : Promise.reject())
+        .then(blob => new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+        }))
+        .catch(() => '');
+}
+
+function wordEstadoStyle(estado, fecha) {
+    const est = normEstado(estado);
+    if (isVencido(fecha, estado)) return 'background:#fef2f2;color:#b91c1c;';
+    if (est === 'Cerrado') return 'background:#ecfdf5;color:#047857;';
+    if (est === 'En proceso') return 'background:#eff6ff;color:#1d4ed8;';
+    return 'background:#fffbeb;color:#b45309;';
+}
+
+function buildWordTablesHtml() {
+    let body = '';
+    estructura.forEach(p => {
+        body += `<div class="sec-principal">${escapeHtml(p.titulo)}</div>`;
+        (p.subsecciones || []).forEach(s => {
+            body += `<div class="sec-secundaria">${escapeHtml(s.titulo)}</div>`;
+            body += `<table class="tbl-acuerdos"><thead><tr>
+                <th class="c-num">N°</th><th>Acuerdo / Actividad</th><th>Responsable</th>
+                <th>Fecha compromiso</th><th>Entregable</th><th>Estado</th><th>N.° Carta / Ref.</th><th>Observaciones</th>
+            </tr></thead><tbody>`;
+            let n = 0;
+            (s.acuerdos || []).forEach(a => {
+                n++;
+                const venc = isVencido(a.fecha, a.estado);
+                const estLbl = venc ? 'Vencido' : normEstado(a.estado);
+                body += `<tr>
+                    <td class="c-num">${n}</td>
+                    <td><strong>${escapeHtml(a.acuerdo)}</strong></td>
+                    <td>${escapeHtml(a.responsable || '—')}</td>
+                    <td>${escapeHtml(fmtFecha(a.fecha))}</td>
+                    <td>${escapeHtml(a.entregable || '—')}</td>
+                    <td style="${wordEstadoStyle(a.estado, a.fecha)}font-weight:700;text-align:center;">${escapeHtml(estLbl)}</td>
+                    <td>${escapeHtml(a.docRef || '—')}</td>
+                    <td>${escapeHtml(a.observaciones || '—')}</td>
+                </tr>`;
+                (a.subAcuerdos || []).forEach(sa => {
+                    const sv = isVencido(sa.fecha, sa.estado);
+                    const sl = sv ? 'Vencido' : normEstado(sa.estado);
+                    body += `<tr class="sub-row">
+                        <td class="c-num"></td>
+                        <td>↳ ${escapeHtml((sa.texto || '').trim() || 'Sub-acuerdo')}</td>
+                        <td>${escapeHtml(sa.responsable || '—')}</td>
+                        <td>${escapeHtml(fmtFecha(sa.fecha))}</td>
+                        <td>${escapeHtml(sa.entregable || '—')}</td>
+                        <td style="${wordEstadoStyle(sa.estado, sa.fecha)}font-weight:700;text-align:center;">${escapeHtml(sl)}</td>
+                        <td>—</td>
+                        <td>—</td>
+                    </tr>`;
+                });
+            });
+            if (!n) body += `<tr><td colspan="8" class="empty-row">Sin acuerdos registrados en esta sección.</td></tr>`;
+            body += `</tbody></table>`;
+        });
+    });
+    return body;
+}
+
+async function buildWordHtml() {
+    const meta = getMeta();
+    const stats = getExportStats();
+    const bannerB64 = await fetchImageAsBase64('imagenes/PA_Peru_Titulo.jpg');
+    const bannerImg = bannerB64
+        ? `<img src="${bannerB64}" alt="P.A. Perú" style="width:100%;max-width:620px;height:auto;display:block;margin:0 auto 16px;">`
+        : '';
+    const fechaExp = new Date().toLocaleString('es-PE', { dateStyle: 'long', timeStyle: 'short' });
+
+    return `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+<meta charset="utf-8">
+<title>Acta Reunión N° ${escapeHtml(meta.num)}</title>
+<!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View></w:WordDocument></xml><![endif]-->
+<style>
+@page { size: A4 landscape; margin: 1.4cm 1.2cm; }
+body { font-family: 'Segoe UI', Calibri, Arial, sans-serif; font-size: 10pt; color: #0f172a; line-height: 1.45; }
+.doc-header { background: linear-gradient(90deg, #0f2744 0%, #1a4a7a 100%); color: #fff; padding: 14px 18px; margin-bottom: 14px; }
+.doc-header h1 { margin: 0; font-size: 16pt; letter-spacing: 0.04em; text-transform: uppercase; }
+.doc-header p { margin: 6px 0 0; font-size: 9pt; opacity: 0.92; }
+.meta-box { width: 100%; border-collapse: collapse; margin-bottom: 14px; }
+.meta-box td { border: 1px solid #cbd5e1; padding: 8px 10px; font-size: 9.5pt; vertical-align: top; }
+.meta-box .lbl { background: #f1f5f9; font-weight: 700; color: #1e3a5f; width: 18%; text-transform: uppercase; font-size: 8pt; letter-spacing: 0.05em; }
+.meta-box .val { background: #fff; width: 32%; }
+.meta-box .val-wide { background: #fff; }
+.kpi-row { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+.kpi-row td { text-align: center; padding: 10px 6px; border: 1px solid #e2e8f0; font-size: 9pt; }
+.kpi-row .n { font-size: 18pt; font-weight: 800; display: block; margin-bottom: 4px; }
+.kpi-total .n { color: #1d4ed8; }
+.kpi-pend .n { color: #d97706; }
+.kpi-proc .n { color: #0284c7; }
+.kpi-cerr .n { color: #059669; }
+.kpi-venc .n { color: #dc2626; }
+.sec-asistentes-title { background: #dbeafe; color: #1e3a5f; font-weight: 800; text-align: center; padding: 10px; margin: 16px 0 0; font-size: 11pt; letter-spacing: 0.06em; border: 1px solid #93c5fd; }
+.tbl-asistentes-word { width: 100%; border-collapse: collapse; margin-bottom: 18px; font-size: 9.5pt; }
+.tbl-asistentes-word th { background: #f1f5f9; color: #1e3a5f; font-weight: 700; padding: 8px 10px; border: 1px solid #cbd5e1; text-transform: uppercase; font-size: 8pt; }
+.tbl-asistentes-word td { border: 1px solid #cbd5e1; padding: 7px 10px; }
+.tbl-asistentes-word tr:nth-child(even) td { background: #f8fafc; }
+.sec-principal { background: #0f2744; color: #fff; padding: 8px 12px; font-weight: 800; font-size: 11pt; margin: 18px 0 0; text-transform: uppercase; letter-spacing: 0.03em; }
+.sec-secundaria { background: #dbeafe; color: #1e40af; padding: 6px 12px; font-weight: 700; font-size: 10pt; margin: 0 0 6px; border-left: 4px solid #2563eb; }
+.tbl-acuerdos { width: 100%; border-collapse: collapse; margin-bottom: 14px; font-size: 9pt; }
+.tbl-acuerdos th { background: #1e3a5f; color: #fff; padding: 7px 6px; text-align: left; font-size: 8pt; text-transform: uppercase; letter-spacing: 0.04em; border: 1px solid #1e3a5f; }
+.tbl-acuerdos td { border: 1px solid #cbd5e1; padding: 6px 6px; vertical-align: top; }
+.tbl-acuerdos tr.sub-row td { background: #f0f9ff; }
+.tbl-acuerdos .c-num { text-align: center; width: 28px; font-weight: 700; color: #1e40af; }
+.empty-row { text-align: center; color: #64748b; font-style: italic; padding: 12px; }
+.doc-footer { margin-top: 20px; padding-top: 10px; border-top: 2px solid #0f2744; font-size: 8.5pt; color: #64748b; }
+.doc-footer strong { color: #0f2744; }
+</style>
+</head>
+<body>
+${bannerImg}
+<div class="doc-header">
+  <h1>Acta de Reunión Interna — Seguimiento de Acuerdos</h1>
+  <p>P.A. Perú · Ingeniería y Gestión de Proyectos · Documento gerencial de seguimiento</p>
+</div>
+<table class="meta-box">
+  <tr>
+    <td class="lbl">Reunión N°</td><td class="val">${escapeHtml(meta.num)}</td>
+    <td class="lbl">Fecha reunión</td><td class="val">${escapeHtml(fmtFecha(meta.fecha))}</td>
+  </tr>
+  <tr>
+    <td class="lbl">Lugar</td><td class="val">${escapeHtml(meta.lugar)}</td>
+    <td class="lbl">Elaborado por</td><td class="val">${escapeHtml(meta.autor)}</td>
+  </tr>
+  <tr>
+    <td class="lbl">Proyecto</td><td class="val-wide" colspan="3">${escapeHtml(meta.proyecto)}</td>
+  </tr>
+</table>
+<table class="kpi-row">
+  <tr>
+    <td class="kpi-total"><span class="n">${stats.total}</span>Total acuerdos</td>
+    <td class="kpi-pend"><span class="n">${stats.pendiente}</span>Pendientes</td>
+    <td class="kpi-proc"><span class="n">${stats.proceso}</span>En proceso</td>
+    <td class="kpi-cerr"><span class="n">${stats.cerrado}</span>Cerrados</td>
+    <td class="kpi-venc"><span class="n">${stats.vencido}</span>Vencidos</td>
+  </tr>
+</table>
+${buildAsistenciaWordHtml()}
+${buildWordTablesHtml()}
+<div class="doc-footer">
+  <p><strong>Documento generado:</strong> ${escapeHtml(fechaExp)} · Reunión N° ${escapeHtml(meta.num)} · ${escapeHtml(meta.autor)}</p>
+  <p>Este documento es un registro oficial de seguimiento de acuerdos de la reunión interna de obra.</p>
+</div>
+</body></html>`;
+}
+
+async function exportWord() {
+    showToast('📄 Generando documento Word…');
+    try {
+        const html = await buildWordHtml();
+        download(html, `Acta_R${getMeta().num || 'doc'}_seguimiento.doc`, 'application/msword');
+        showToast('📄 Documento Word generado');
+    } catch {
+        alert('No se pudo generar el documento Word.');
+    }
+}
+
+/* ─── Excel Fluent Design (xlsx-js-style) ─── */
+const XL_COLS = 11;
+const FLUENT_XL = {
+    font: 'Segoe UI',
+    accent: '005FB8',
+    accentHover: '106EBE',
+    accentSubtle: 'EBF3FC',
+    nav: '0F2744',
+    canvas: 'F3F4F6',
+    surface: 'FFFFFF',
+    stroke: 'C5CDD6',
+    gridLine: '8A9AAD',
+    strokeSoft: 'D8DEE6',
+    text: '242424',
+    textMuted: '605E5C',
+    successBg: 'DFF6DD',
+    successFg: '107C10',
+    warningBg: 'FFF4CE',
+    warningFg: '7A5C00',
+    infoBg: 'EBF3FC',
+    infoFg: '005FB8',
+    dangerBg: 'FDE7E9',
+    dangerFg: 'C42B1C',
+    subRow: 'F0F9FF'
+};
+
+function xlColLetter(c) {
+    let n = c + 1;
+    let s = '';
+    while (n > 0) {
+        const m = (n - 1) % 26;
+        s = String.fromCharCode(65 + m) + s;
+        n = Math.floor((n - 1) / 26);
+    }
+    return s;
+}
+
+function xlRef(r, c) {
+    return xlColLetter(c) + (r + 1);
+}
+
+function xlEdge(color, style) {
+    return { style: style || 'thin', color: { rgb: color || FLUENT_XL.gridLine } };
+}
+
+/** Bordes en las cuatro caras — cuadrícula visible en cada celda */
+function xlBorderFull(strong) {
+    const b = xlEdge(strong ? FLUENT_XL.gridLine : FLUENT_XL.stroke, strong ? 'thin' : 'thin');
+    return { top: b, bottom: b, left: b, right: b };
+}
+
+function xlBorderSection() {
+    const g = xlBorderFull();
+    return {
+        ...g,
+        left: xlEdge(FLUENT_XL.accent, 'medium')
+    };
+}
+
+function xlStyle(kind, extra) {
+    const F = FLUENT_XL;
+    const grid = xlBorderFull();
+    const base = {
+        font: { name: F.font, sz: 10, color: { rgb: F.text } },
+        border: grid
+    };
+    const map = {
+        empty: {
+            fill: { fgColor: { rgb: F.canvas } },
+            border: grid
+        },
+        title: {
+            font: { name: F.font, sz: 15, bold: true, color: { rgb: 'FFFFFF' } },
+            fill: { fgColor: { rgb: F.nav } },
+            alignment: { horizontal: 'center', vertical: 'center', wrapText: true },
+            border: xlBorderFull(true)
+        },
+        subtitle: {
+            font: { name: F.font, sz: 10, color: { rgb: F.textMuted } },
+            fill: { fgColor: { rgb: F.surface } },
+            alignment: { horizontal: 'center', vertical: 'center', wrapText: true },
+            border: grid
+        },
+        spacer: {
+            fill: { fgColor: { rgb: F.canvas } },
+            border: grid
+        },
+        section: {
+            font: { name: F.font, sz: 10, bold: true, color: { rgb: F.accent } },
+            fill: { fgColor: { rgb: F.accentSubtle } },
+            alignment: { horizontal: 'left', vertical: 'center', indent: 1 },
+            border: xlBorderSection()
+        },
+        label: {
+            font: { name: F.font, sz: 9, bold: true, color: { rgb: F.textMuted } },
+            fill: { fgColor: { rgb: F.canvas } },
+            alignment: { horizontal: 'left', vertical: 'center', indent: 1, wrapText: true },
+            border: grid
+        },
+        value: {
+            fill: { fgColor: { rgb: F.surface } },
+            alignment: { horizontal: 'left', vertical: 'center', wrapText: true },
+            border: grid
+        },
+        kpiHead: {
+            font: { name: F.font, sz: 8, bold: true, color: { rgb: F.textMuted } },
+            fill: { fgColor: { rgb: F.accentSubtle } },
+            alignment: { horizontal: 'center', vertical: 'center', wrapText: true },
+            border: xlBorderFull(true)
+        },
+        kpiVal: {
+            font: { name: F.font, sz: 16, bold: true, color: { rgb: F.accent } },
+            fill: { fgColor: { rgb: F.surface } },
+            alignment: { horizontal: 'center', vertical: 'center' },
+            border: grid
+        },
+        colHead: {
+            font: { name: F.font, sz: 9, bold: true, color: { rgb: F.nav } },
+            fill: { fgColor: { rgb: F.accentSubtle } },
+            alignment: { horizontal: 'center', vertical: 'center', wrapText: true },
+            border: xlBorderFull(true)
+        },
+        data: {
+            fill: { fgColor: { rgb: F.surface } },
+            alignment: { horizontal: 'left', vertical: 'top', wrapText: true },
+            border: grid
+        },
+        dataAlt: {
+            fill: { fgColor: { rgb: F.canvas } },
+            alignment: { horizontal: 'left', vertical: 'top', wrapText: true },
+            border: grid
+        },
+        sub: {
+            font: { name: F.font, sz: 9, italic: true, color: { rgb: F.infoFg } },
+            fill: { fgColor: { rgb: F.subRow } },
+            alignment: { horizontal: 'left', vertical: 'top', wrapText: true, indent: 1 },
+            border: grid
+        },
+        footer: {
+            font: { name: F.font, sz: 9, bold: true, color: { rgb: F.textMuted } },
+            fill: { fgColor: { rgb: F.canvas } },
+            alignment: { horizontal: 'left', vertical: 'center', indent: 1 },
+            border: grid
+        },
+        footerSign: {
+            fill: { fgColor: { rgb: F.surface } },
+            border: grid
+        },
+        estadoPend: {
+            font: { name: F.font, sz: 9, bold: true, color: { rgb: F.warningFg } },
+            fill: { fgColor: { rgb: F.warningBg } },
+            alignment: { horizontal: 'center', vertical: 'center' },
+            border: grid
+        },
+        estadoProc: {
+            font: { name: F.font, sz: 9, bold: true, color: { rgb: F.infoFg } },
+            fill: { fgColor: { rgb: F.infoBg } },
+            alignment: { horizontal: 'center', vertical: 'center' },
+            border: grid
+        },
+        estadoCerr: {
+            font: { name: F.font, sz: 9, bold: true, color: { rgb: F.successFg } },
+            fill: { fgColor: { rgb: F.successBg } },
+            alignment: { horizontal: 'center', vertical: 'center' },
+            border: grid
+        },
+        estadoVenc: {
+            font: { name: F.font, sz: 9, bold: true, color: { rgb: F.dangerFg } },
+            fill: { fgColor: { rgb: F.dangerBg } },
+            alignment: { horizontal: 'center', vertical: 'center' },
+            border: grid
+        }
+    };
+    const s = { ...base, ...(map[kind] || map.data) };
+    if (extra) Object.assign(s, extra);
+    return s;
+}
+
+function xlSetCell(ws, r, c, value, styleKind, extraStyle) {
+    const addr = xlRef(r, c);
+    const v = value == null ? '' : value;
+    const isNum = typeof v === 'number' && !isNaN(v);
+    ws[addr] = { v: isNum ? v : String(v), t: isNum ? 'n' : 's' };
+    ws[addr].s = xlStyle(styleKind, extraStyle);
+}
+
+function xlMerge(ws, r1, c1, r2, c2) {
+    if (!ws['!merges']) ws['!merges'] = [];
+    ws['!merges'].push({ s: { r: r1, c: c1 }, e: { r: r2, c: c2 } });
+}
+
+/** Pinta todas las celdas de la fila (cuadrícula completa) y fusiona un rango con valor */
+function xlMergeRow(ws, row, c0, c1, lastCol, value, styleKind) {
+    for (let c = 0; c <= lastCol; c++) {
+        xlSetCell(ws, row, c, (c >= c0 && c <= c1 && c === c0) ? value : '', styleKind);
+    }
+    if (c1 > c0) xlMerge(ws, row, c0, row, c1);
+}
+
+/** Rellena celdas faltantes para que toda la hoja tenga líneas de cuadrícula */
+function xlFinalizeGrid(ws, maxRow, lastCol) {
+    for (let r = 0; r <= maxRow; r++) {
+        for (let c = 0; c <= lastCol; c++) {
+            const addr = xlRef(r, c);
+            if (!ws[addr]) xlSetCell(ws, r, c, '', 'empty');
+        }
+    }
+}
+
+function xlRowH(ws, r, hpt) {
+    if (!ws['!rows']) ws['!rows'] = [];
+    ws['!rows'][r] = { hpt: hpt || 18 };
+}
+
+function xlGap(ws, row, lastCol, hpt) {
+    for (let c = 0; c <= lastCol; c++) xlSetCell(ws, row, c, '', 'spacer');
+    xlRowH(ws, row, hpt || 6);
+    return row + 1;
+}
+
+function xlSection(ws, row, lastCol, title) {
+    xlMergeRow(ws, row, 0, lastCol, lastCol, title, 'section');
+    xlRowH(ws, row, 22);
+    return row + 1;
+}
+
+function xlEstadoStyle(estado, fecha) {
+    if (fecha && isVencido(fecha, estado)) return 'estadoVenc';
+    const e = normEstado(estado);
+    if (e === 'Cerrado') return 'estadoCerr';
+    if (e === 'En proceso') return 'estadoProc';
+    return 'estadoPend';
+}
+
+function buildActaExcelSheet(meta, stats, rows) {
+    const ws = {};
+    const fechaExp = new Date().toLocaleString('es-PE', { dateStyle: 'medium', timeStyle: 'short' });
+    const lastCol = XL_COLS - 1;
+    let row = 0;
+
+    xlMergeRow(ws, row, 0, lastCol, lastCol, 'Acta de reunión interna', 'title');
+    xlRowH(ws, row, 34);
+    row++;
+    xlMergeRow(ws, row, 0, lastCol, lastCol, 'Seguimiento de acuerdos · P.A. Perú · Reunión N° ' + (meta.num || '—'), 'subtitle');
+    xlRowH(ws, row, 20);
+    row = xlGap(ws, row, lastCol, 8);
+
+    row = xlSection(ws, row, lastCol, 'Datos de la reunión');
+
+    for (let c = 0; c <= lastCol; c++) xlSetCell(ws, row, c, '', 'value');
+    xlSetCell(ws, row, 0, 'Proyecto', 'label');
+    xlMerge(ws, row, 0, row, 1);
+    xlSetCell(ws, row, 2, meta.proyecto, 'value');
+    xlMerge(ws, row, 2, row, lastCol);
+    xlRowH(ws, row, meta.proyecto.length > 80 ? 36 : 22);
+    row++;
+
+    for (let c = 0; c <= lastCol; c++) xlSetCell(ws, row, c, '', 'value');
+    xlSetCell(ws, row, 0, 'Reunión N°', 'label');
+    xlSetCell(ws, row, 1, meta.num, 'value');
+    xlSetCell(ws, row, 2, 'Fecha', 'label');
+    xlSetCell(ws, row, 3, fmtFecha(meta.fecha), 'value');
+    xlMerge(ws, row, 3, row, 4);
+    xlSetCell(ws, row, 5, 'Lugar', 'label');
+    xlSetCell(ws, row, 6, meta.lugar, 'value');
+    xlMerge(ws, row, 6, row, lastCol);
+    xlRowH(ws, row, 20);
+    row++;
+
+    for (let c = 0; c <= lastCol; c++) xlSetCell(ws, row, c, '', 'value');
+    xlSetCell(ws, row, 0, 'Elaborado', 'label');
+    xlSetCell(ws, row, 1, meta.autor, 'value');
+    xlSetCell(ws, row, 2, 'Exportado', 'label');
+    xlSetCell(ws, row, 3, fechaExp, 'value');
+    xlMerge(ws, row, 3, row, lastCol);
+    xlRowH(ws, row, 20);
+    row = xlGap(ws, row, lastCol, 10);
+
+    row = xlSection(ws, row, lastCol, 'Indicadores de acuerdos');
+
+    const kpiLabels = ['Total', 'Pendientes', 'En proceso', 'Cerrados', 'Vencidos'];
+    const kpiVals = [stats.total, stats.pendiente, stats.proceso, stats.cerrado, stats.vencido];
+    const kpiSpan = Math.floor(XL_COLS / kpiLabels.length);
+    for (let c = 0; c <= lastCol; c++) xlSetCell(ws, row, c, '', 'kpiHead');
+    kpiLabels.forEach((lbl, i) => {
+        const c0 = i * kpiSpan;
+        const c1 = i === kpiLabels.length - 1 ? lastCol : c0 + kpiSpan - 1;
+        for (let c = c0; c <= c1; c++) xlSetCell(ws, row, c, c === c0 ? lbl : '', 'kpiHead');
+        if (c1 > c0) xlMerge(ws, row, c0, row, c1);
+    });
+    xlRowH(ws, row, 18);
+    row++;
+    for (let c = 0; c <= lastCol; c++) xlSetCell(ws, row, c, '', 'kpiVal');
+    kpiVals.forEach((val, i) => {
+        const c0 = i * kpiSpan;
+        const c1 = i === kpiLabels.length - 1 ? lastCol : c0 + kpiSpan - 1;
+        for (let c = c0; c <= c1; c++) xlSetCell(ws, row, c, c === c0 ? val : '', 'kpiVal');
+        if (c1 > c0) xlMerge(ws, row, c0, row, c1);
+    });
+    xlRowH(ws, row, 28);
+    row = xlGap(ws, row, lastCol, 10);
+
+    const tasaAsist = CATALOGO_ASISTENTES.length
+        ? Math.round((asistentes.length / CATALOGO_ASISTENTES.length) * 100) + '%'
+        : '—';
+    row = xlSection(ws, row, lastCol, 'Asistencia');
+
+    for (let c = 0; c <= lastCol; c++) xlSetCell(ws, row, c, '', 'label');
+    xlSetCell(ws, row, 0, 'Esperados', 'label');
+    xlSetCell(ws, row, 1, CATALOGO_ASISTENTES.length, 'value');
+    xlSetCell(ws, row, 2, 'Presentes', 'label');
+    xlSetCell(ws, row, 3, asistentes.length, 'value');
+    xlSetCell(ws, row, 4, 'Tasa', 'label');
+    xlSetCell(ws, row, 5, tasaAsist, 'value');
+    xlMerge(ws, row, 5, row, lastCol);
+    xlRowH(ws, row, 20);
+    row++;
+
+    for (let c = 0; c <= lastCol; c++) xlSetCell(ws, row, c, '', 'colHead');
+    xlSetCell(ws, row, 0, 'N°', 'colHead');
+    xlSetCell(ws, row, 1, 'Nombre', 'colHead');
+    xlMerge(ws, row, 1, row, 7);
+    xlSetCell(ws, row, 8, 'Cargo', 'colHead');
+    xlMerge(ws, row, 8, row, lastCol);
+    xlRowH(ws, row, 20);
+    row++;
+
+    if (!asistentes.length) {
+        for (let c = 0; c <= lastCol; c++) xlSetCell(ws, row, c, '', 'data');
+        xlSetCell(ws, row, 0, '—', 'data');
+        xlSetCell(ws, row, 1, 'Sin asistentes registrados', 'data');
+        xlMerge(ws, row, 1, row, 7);
+        xlSetCell(ws, row, 8, '—', 'data');
+        xlMerge(ws, row, 8, row, lastCol);
+        xlRowH(ws, row, 18);
+        row++;
+    } else {
+        asistentes.forEach((a, i) => {
+            const st = i % 2 ? 'dataAlt' : 'data';
+            for (let c = 0; c <= lastCol; c++) xlSetCell(ws, row, c, '', st);
+            xlSetCell(ws, row, 0, i + 1, st);
+            xlSetCell(ws, row, 1, a.nombre, st);
+            xlMerge(ws, row, 1, row, 7);
+            xlSetCell(ws, row, 8, a.cargo, st);
+            xlMerge(ws, row, 8, row, lastCol);
+            xlRowH(ws, row, 18);
+            row++;
+        });
+    }
+    row = xlGap(ws, row, lastCol, 10);
+
+    row = xlSection(ws, row, lastCol, 'Seguimiento de acuerdos');
+
+    const acHeaders = ['N°', 'Sec. principal', 'Sec. secundaria', 'Tipo', 'Acuerdo / Actividad', 'Responsable', 'Fecha', 'Entregable', 'Estado', 'Ref.', 'Observaciones'];
+    acHeaders.forEach((h, c) => xlSetCell(ws, row, c, h, 'colHead'));
+    const headerRow = row;
+    xlRowH(ws, row, 22);
+    row++;
+
+    if (!rows.length) {
+        xlMergeRow(ws, row, 0, lastCol, lastCol, 'Sin acuerdos registrados.', 'data');
+        xlRowH(ws, row, 18);
+        row++;
+    } else {
+        rows.forEach((r, i) => {
+            const isSub = r.tipo === 'Sub-acuerdo';
+            const st = isSub ? 'sub' : (i % 2 ? 'dataAlt' : 'data');
+            const estadoSt = isSub ? st : xlEstadoStyle(r.estado, r.fechaIso);
+            for (let c = 0; c <= lastCol; c++) xlSetCell(ws, row, c, '', st);
+            xlSetCell(ws, row, 0, isSub ? '' : r.item, st);
+            xlSetCell(ws, row, 1, isSub ? '' : r.seccionPrincipal, st);
+            xlSetCell(ws, row, 2, isSub ? '' : r.seccionSecundaria, st);
+            xlSetCell(ws, row, 3, r.tipo, st);
+            xlSetCell(ws, row, 4, isSub ? '↳ ' + r.acuerdo : r.acuerdo, st);
+            xlSetCell(ws, row, 5, r.responsable, st);
+            xlSetCell(ws, row, 6, r.fecha, st);
+            xlSetCell(ws, row, 7, r.entregable, st);
+            xlSetCell(ws, row, 8, r.estado, estadoSt);
+            xlSetCell(ws, row, 9, r.docRef, st);
+            xlSetCell(ws, row, 10, r.observaciones, st);
+            xlRowH(ws, row, isSub ? 16 : 20);
+            row++;
+        });
+    }
+    row = xlGap(ws, row, lastCol, 12);
+
+    for (let c = 0; c <= lastCol; c++) xlSetCell(ws, row, c, '', c <= 2 ? 'footer' : 'footerSign');
+    xlSetCell(ws, row, 0, 'Revisión / Firma', 'footer');
+    xlMerge(ws, row, 0, row, 2);
+    xlMerge(ws, row, 3, row, lastCol);
+    xlRowH(ws, row, 28);
+
+    xlFinalizeGrid(ws, row, lastCol);
+    ws['!ref'] = 'A1:' + xlRef(row, lastCol);
+    ws['!merges'] = ws['!merges'] || [];
+    ws['!cols'] = [
+        { wch: 4 }, { wch: 16 }, { wch: 14 }, { wch: 10 }, { wch: 36 },
+        { wch: 15 }, { wch: 11 }, { wch: 11 }, { wch: 11 }, { wch: 10 }, { wch: 22 }
+    ];
+    ws['!margins'] = { left: 0.5, right: 0.5, top: 0.6, bottom: 0.6, header: 0.3, footer: 0.3 };
+    ws['!views'] = [{ showGridLines: true, showRowColHeaders: true, zoomScale: 100 }];
+    if (headerRow >= 0) {
+        ws['!freeze'] = { xSplit: 0, ySplit: headerRow + 1, activePane: 'bottomLeft', state: 'frozen' };
+    }
+    return ws;
+}
+
+function exportExcel() {
+    if (typeof XLSX === 'undefined') {
+        alert('No se cargó la librería Excel. Verifique su conexión a internet.');
+        return;
+    }
+    showToast('📊 Generando informe Excel…');
+    try {
+        const meta = getMeta();
+        const stats = getExportStats();
+        const rows = collectExportRows();
+        const wb = XLSX.utils.book_new();
+        const ws = buildActaExcelSheet(meta, stats, rows);
+        XLSX.utils.book_append_sheet(wb, ws, 'Acta de Reunión');
+        const fname = `Acta_R${meta.num || 'doc'}_seguimiento_${new Date().toISOString().slice(0, 10)}.xlsx`;
+        XLSX.writeFile(wb, fname);
+        showToast('📊 Informe Excel generado');
+    } catch (err) {
+        console.error(err);
+        alert('No se pudo generar el archivo Excel. Compruebe la conexión e intente de nuevo.');
+    }
+}
+
+function download(content, name, mime) {
+    const blob = new Blob(['\ufeff' + content], { type: mime + ';charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = name;
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+function setupListeners() {
+    document.getElementById('filtroTexto').addEventListener('input', () => {
+        syncKpiActiveUI();
+        render();
+    });
+    document.getElementById('filtroEstado').addEventListener('change', () => {
+        kpiFilterActive = '';
+        syncKpiActiveUI();
+        render();
+    });
+    document.getElementById('metaNum')?.addEventListener('change', onReunionNumChange);
+    ['metaFecha','metaAutor','metaLugar'].forEach(id => {
+        document.getElementById(id)?.addEventListener('change', () => {
+            if (!isUsuarioAdministrador()) return;
+            saveDraft();
+        });
+    });
+    document.getElementById('modalAdminPassword')?.addEventListener('click', e => {
+        if (e.target.id === 'modalAdminPassword') closeAdminPasswordModal();
+    });
+    document.getElementById('modalAsistencia')?.addEventListener('click', e => {
+        if (e.target.id === 'modalAsistencia') closeModalAsistencia();
+    });
+    document.getElementById('adminPasswordInput')?.addEventListener('keydown', e => {
+        if (e.key === 'Enter') { e.preventDefault(); submitAdminPassword(); }
+        if (e.key === 'Escape') closeAdminPasswordModal();
+    });
+    document.addEventListener('click', e => {
+        const wrap = document.querySelector('.notif-wrap');
+        if (wrap && !wrap.contains(e.target)) cerrarNotifPanel();
+    });
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') cerrarNotifPanel();
+    });
+    document.querySelectorAll('.kpi').forEach(el => {
+        el.addEventListener('keydown', e => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                const f = el.dataset.filter;
+                setKpiFilter(f === '__all__' ? '' : f);
+            }
+        });
+    });
+    document.getElementById('promptInput').addEventListener('keydown', e => {
+        if (e.key === 'Enter') confirmPrompt();
+        if (e.key === 'Escape') closePrompt();
+    });
+}
+
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+    init().catch(err => {
+        console.error('[init]', err);
+        bdProgressFinish();
+        initFromLocalStorage();
+        finishInitUI();
+    });
+});
+</script>
+</body>
+</html>
